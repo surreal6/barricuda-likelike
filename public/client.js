@@ -744,6 +744,28 @@ function newGame() {
                         if (ROOMS[p.room].frames != null)
                             f = ROOMS[p.room].frames;
 
+                        // with this approach background becomes the firsr sprite in allSprites
+                        if (ROOMS[p.room].animations != null) {
+
+                            let bgAnim = createSprite(0, 0, 128, 100);
+                        
+                            if (ROOMS[p.room].animations != null) {
+                                Object.keys(ROOMS[p.room].animations).forEach((animName) => {
+                                    let factor = ROOMS[p.room].animations[animName][1] - 4;
+                                    let crop = bgg.get(0,100 * factor,128,400);
+                                    let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, f);
+                                    let anim = loadAnimation(spritesheet);
+                                    anim.frameDelay = ROOMS[p.room].frameDelay;
+                                    bgAnim.addAnimation(animName, anim);
+                                })
+                            }
+                        
+                            bgAnim.depthOffset = -100;
+                            bgAnim.scale = 2;
+                            bgAnim.position.x = 128;
+                            bgAnim.position.y = 100;
+                        }
+
                         var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
                         bg = loadAnimation(ss);
 
@@ -1125,6 +1147,13 @@ function newGame() {
     socket.on("refresh", function () {
         socket.disconnect();
         location.reload(true);
+    });
+
+    socket.on("onLights",
+        function (msg) {
+            if (socket.id) {
+                allSprites[0].changeAnimation('bg' + msg[0])
+            }
     });
 
     //I can now open it

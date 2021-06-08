@@ -713,6 +713,11 @@ function adminCommand(adminSocket, str) {
                 io.sockets.emit("refresh");
                 break;
 
+            //switch on the lights
+            case "on":
+                cmd.shift();
+                io.sockets.emit("onLights", cmd);
+                break;
         }
     }
     catch (e) {
