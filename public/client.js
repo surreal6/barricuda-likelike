@@ -1684,8 +1684,8 @@ function Player(p) {
     else
         this.sprite.mouseActive = true;
 
-    //this.sprite.debug = true;
-    this.sprite.setCollider("rectangle", 0, 0, 4, 10)
+    // this.sprite.debug = true;
+    this.sprite.setCollider("rectangle", 0, 0, AVATAR_W/2, AVATAR_H)
 
 
     //no parent in js? WHAAAAT?
@@ -1694,7 +1694,7 @@ function Player(p) {
     this.sprite.transparent = false;
     this.sprite.roomId = p.room; //sure anything goes
     this.sprite.avatar = true;
-    this.sprite.depthOffset = AVATAR_H / 2;
+    this.sprite.depthOffset = AVATAR_H/2 * this.sprite.scale;
 
     //save the dominant color for bubbles and rollover label
     var c1 = color(TOP_COLORS[p.colors[2]]);
@@ -1737,7 +1737,7 @@ function Player(p) {
 
     this.updatePosition = function () {
         this.sprite.position.x = round(this.x);
-        this.sprite.position.y = round(this.y - AVATAR_H / 2 * this.sprite.scale);
+        this.sprite.position.y = round(this.y - this.sprite.depthOffset);
     }
 
     if (this.nickName != "") {
@@ -2403,11 +2403,23 @@ function createThing(thing, id) {
     var newSprite = createSprite(floor(thing.position[0] + sw / 2) * ASSET_SCALE + ox, floor(thing.position[1] + sh / 2) * ASSET_SCALE + oy);
     newSprite.addAnimation("default", animation);
 
-    newSprite.depthOffset = floor(sh / 2) - 4; //4 magic fucking number due to rounding
+    // force offset
+    if (thing.offset != null) {
+        newSprite.depthOffset = thing.offset;
+    } else {
+        newSprite.depthOffset = floor(sh / 2);
+    }
 
     newSprite.id = id;
 
     newSprite.scale = ASSET_SCALE;
+
+    // force scale
+    if (thing.scale != null) {
+        newSprite.scale = thing.scale;
+    }
+    
+    newSprite.depthOffset = newSprite.depthOffset * newSprite.scale;
 
     if (thing.visible != null) {
         newSprite.visible = thing.visible;
