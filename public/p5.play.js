@@ -1617,7 +1617,10 @@ http://molleindustria.org/
           fill(0, 255, 0);
           textAlign(LEFT, BOTTOM);
           textSize(16);
-          text(this.depth + '', this.position.x + 4, this.position.y - 2);
+          text('d ' + this.depth + '', this.position.x + 4, this.position.y - 2);
+        //   text('y ' + this.position.y.toFixed(2), this.position.x + 4, this.position.y + 12);
+        //   text('s ' + this.scale.toFixed(2), this.position.x + 4, this.position.y + 22);
+        //   text('o ' + this.depth .toFixed(2), this.position.x + 4, this.position.y + 32);
 
           noFill();
           stroke(0, 255, 0);
@@ -1626,6 +1629,13 @@ http://molleindustria.org/
           if (this.collider !== undefined) {
             this.collider.draw();
           }
+
+          //draw depth line
+          stroke(255, 255, 0);
+          strokeWeight(1);
+          line(this.position.x - 10, this.depth, this.position.x + 10, this.depth);
+          noFill();
+          
           pop();
         }
 
