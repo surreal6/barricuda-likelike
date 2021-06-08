@@ -1364,6 +1364,16 @@ function update() {
             allSprites[i].depth = allSprites[i].position.y + dOff;
         }
 
+        // update scale and depthOffset in perspective rooms
+        for (var playerId in players) {
+            let p = players[playerId];
+
+            if (ROOMS[room].perspective != null) {
+                    p.sprite.scale = window[ROOMS[room].perspective](p.sprite);
+                    p.sprite.depthOffset = ceil(AVATAR_H / 2 * p.sprite.scale);
+            }
+        }
+
         //
         drawSprites();
 
