@@ -3,6 +3,8 @@
 The tiniest MMORPG. Choose an avatar and hang out with your friends in a virtual version of [La Barricuda](http://labarricuda.blogspot.com/2006/10/instalaciones.html). 
 
 ![](Panorama_barricuda.jpg) 
+
+
 <a href="http://barricuda-likelike.glitch.me" target="_blank">>>>Try it here<<<</a>
 
 Aventuras visuales is an avant garde cinema school and collective in Madrid (Spain). This is a virtual tribute to 'La Barricuda', their beloved local where the workshops took place, which closed years ago, in 2009.
