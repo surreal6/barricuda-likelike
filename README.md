@@ -40,7 +40,7 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
     or any combination of 4 binary digits, related to:   projector, hall lights, classroom lights, cave lights
 
-    TODO: store lights condition globally in MOD
+    DONE: store lights condition globally in MOD
 
 
 This is a Work In Progress. 
