@@ -20,15 +20,15 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
     I found a bug in the depthOffset calculation and fixed it to make it scale dependant. Now depth drawing will work with sprites in different scales. 
 
-    In 'barriEntrada' room, look how i set the 'mesa' thing with a fixed offset of 10. Also the depth with the column will work at different avatarScales.
+    In 'hall' room, look how i set the 'mesa' thing with a fixed offset of 10. Also the depth with the column will work at different avatarScales.
 
-    Look at 'sillas' things in the 'barriAula' room. Each one uses a different scale and the scene profit from the bug fixed. You can change avatarScale and the depth calculation still works fine.
+    Look at 'sillas' things in the 'classroom' room. Each one uses a different scale and the scene profit from the bug fixed. You can change avatarScale and the depth calculation still works fine.
 
 * perspective mode. 
 
     You can define a special function to calculate player scales for each room.
 
-    Walk into 'barriCueva' room to see it working.
+    Walk into 'cave' room to see it working.
 
 * animated background.  Background become a sprite and can be animated.
 
@@ -36,7 +36,7 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
     /on 1001
 
-    or any combination of 4 binary digits, related to:   projector, hall lights, aula lights, cave lights
+    or any combination of 4 binary digits, related to:   projector, hall lights, classroom lights, cave lights
 
     TODO: store lights condition globally
 

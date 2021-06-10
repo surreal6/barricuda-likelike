@@ -749,16 +749,28 @@ function newGame() {
 
                             let bgAnim = createSprite(0, 0, 128, 100);
                         
+                            // this example manages a 128x6400 spritesheet (64 frames of 128x100)
+                            // there are 16 different light conditions x 4 frames each animation
+                            // name of each animation is prefix 'bg' +
+                            // a combination of 4 binary digits, related to: 
+                            // projector, hall lights, classroom lights, cave lights
+                            // in example, 'bg1001' is a scene where projector is on, hall (hall) lights ar off,
+                            // class (classroom) lights are off and cave (cave) light is on.
                             if (ROOMS[p.room].animations != null) {
                                 Object.keys(ROOMS[p.room].animations).forEach((animName) => {
-                                    let factor = ROOMS[p.room].animations[animName][1] - 4;
-                                    let crop = bgg.get(0,100 * factor,128,400);
-                                    let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, f);
+                                    let factor = ROOMS[p.room].animations[animName][1] - f;
+                                    let duration = ROOMS[p.room].animations[animName][1] - ROOMS[p.room].animations[animName][0];
+                                    let crop = bgg.get(0, 100 * factor, 128, 100 * duration);
+
+                                    let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
                                     let anim = loadAnimation(spritesheet);
                                     anim.frameDelay = ROOMS[p.room].frameDelay;
                                     bgAnim.addAnimation(animName, anim);
                                 })
                             }
+
+                            // set current lightState
+                            //  TODO
                         
                             bgAnim.depthOffset = -100;
                             bgAnim.scale = 2;
@@ -1149,10 +1161,12 @@ function newGame() {
         location.reload(true);
     });
 
+    // TODO: move this to clientMod???
     socket.on("onLights",
         function (msg) {
             if (socket.id) {
-                allSprites[0].changeAnimation('bg' + msg[0])
+                allSprites[0].changeAnimation('bg' + msg);
+                console.log('change lights ' + msg);
             }
     });
 
