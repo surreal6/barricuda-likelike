@@ -42,6 +42,32 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
     DONE: store lights condition globally in MOD
 
+* Traffic log
+
+    If enabled, a log will be recorded in /logs/players-log.
+
+    Enable adding this variable to .env:
+        
+        TRAFFICLOG=true
+
+    It will record:
+
+    * when a player join
+        id, join, nick, time, ip
+
+    * when a player disconnect
+        id, disconnect, time
+
+    * when a player enter a room
+        id, room, roomName, time
+
+    * when a player focus
+        id, focus, time
+
+    * when a player blur (AFK)
+        id, blur, time
+
+
 
 This is a Work In Progress. 
 
@@ -49,4 +75,7 @@ This is a Work In Progress.
 
 
 Code licensed under a GNU Lesser General Public License v2.1.
+
+
+
 
