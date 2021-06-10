@@ -26,19 +26,21 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
 * perspective mode. 
 
-    You can define a special function to calculate player scales for each room.
+    You can define a special function to calculate player scales for each room. This does not affect things, as they are expected to be static. Use scale and offset to align things in perspective. The debug mode draw is very helpfull for this, so i added a yellow line to show the depthOffset (it should be the 'feet' of the sprite at any scale)
 
     Walk into 'cave' room to see it working.
 
 * animated background.  Background become a sprite and can be animated.
 
-    If you enter with admin (use 'admin|pass' as name) you can change bg animation by calling this command:
+    You can use the switches in  the hall floor to change animation.
+
+    Also, if you enter with admin (use 'admin|pass' as name) you can change bg animation by calling this command:
 
     /on 1001
 
     or any combination of 4 binary digits, related to:   projector, hall lights, classroom lights, cave lights
 
-    TODO: store lights condition globally
+    TODO: store lights condition globally in MOD
 
 
 This is a Work In Progress. 
