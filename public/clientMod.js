@@ -11,6 +11,21 @@ The functions are called by the engine at crucial points, only if they exist.
 
 // BARRICUDA functions
 
+function initMod(playerId, roomId) {
+    print("Mod: " + players[playerId].nickName + " (you) joined the game at " + roomId);
+
+    // add custom client listeners HERE
+
+    // //prevent duplicate listeners
+    // if (!socket.hasListeners('event')) {
+    //     socket.on("event", function (msg) {
+    //         if (socket.id) {
+    //             console.log('event happend');
+    //         }
+    //     });
+    // }
+}
+
 function cuevaPerspective(sprite) {
     let s;
     let pos = round(sprite.position.y + sprite.depthOffset);

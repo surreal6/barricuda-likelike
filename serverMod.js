@@ -15,19 +15,21 @@ module.exports.initMod = function (io, gameState, DATA) {
     global.io = io;
     global.DATA = DATA;
 
-    // lights on and off 
+    // lightState on and off 
     // projector, hall ,class, cave
-    global.lights = [0, 0, 0, 0]
-
-    //
-    setInterval(function () {
-        //
-    }, 60 * 1000); //every minute changes
+    global.lightState = [0, 0, 0, 0]
 
     //global function ffs
     global.random = function (min, max) {
         return Math.random() * (max - min) + min;
     }
+
+    // this turns on and off the projector every minute
+    setInterval(function () {
+        global.lightState[0] =  global.lightState[0] === 1 ? 0 : 1;
+        // emit change to all clients
+        io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""))
+    }, 60 * 1000); //every minute changes
 
     global.VIPList = [];
 
@@ -37,6 +39,8 @@ module.exports.initMod = function (io, gameState, DATA) {
 module.exports.caveJoin = function (playerObject, roomId) {
     // console.log(playerObject.nickName + " enters the VIP room");
     //...
+    this.setLightState();
+    
     global.VIPList.push(playerObject.id);
     if (global.VIPList.length > 2) {
         var expelled = global.VIPList.shift();
@@ -58,6 +62,8 @@ module.exports.caveIntro = function (newComerId, introObj) {
     //since the server has the real list I can override the intro after the fact and expel the ghost. Ugly but necessary.
 
     // console.log("Obsolete intro? " + gameState.players[introObj.id].room);
+
+    this.setLightState();
 
     if (gameState.players[introObj.id].room != "Cave")
         io.to("Cave").emit("playerLeft", { id: introObj.id, room: "Cave", disconnect: false });
@@ -128,25 +134,44 @@ module.exports.caveLeave = function (playerObject, roomId) {
 
 }
 
-module.exports.setLightState = function (pId) {
-    let lights = global.lights.join("");
-    console.log('set lights ' + lights);
-    io.sockets.emit('onLights', lights);
+
+module.exports.hallJoin = function(player, roomId) {
+    // console.log("MOD: " + player.nickName + " entered room " + roomId);
+    this.setLightState();
 }
 
+
+module.exports.classroomJoin = function(player, roomId) {
+    // console.log("MOD: " + player.nickName + " entered room " + roomId);
+    this.setLightState();
+}
+
+
+// LIGHTS
+
 module.exports.onHallLight = function (pId) {
-    global.lights[1] = global.lights[1] ? 0 : 1 
-    this.setLightState(pId)
+    // console.log('switch hall');
+    global.lightState[1] = global.lightState[1] ? 0 : 1 
+    this.setLightState();
 }
 
 module.exports.onClassroomLight = function (pId) {
-    global.lights[2] = global.lights[2] ? 0 : 1 
-    this.setLightState(pId)
+    // console.log('switch classroom');
+    global.lightState[2] = global.lightState[2] ? 0 : 1 
+    this.setLightState();
 }
 
 module.exports.onCaveLight = function (pId) {
-    global.lights[3] = global.lights[3] ? 0 : 1 
-    this.setLightState(pId)
+    // console.log('switch cave');
+    global.lightState[3] = global.lightState[3] ? 0 : 1 
+    this.setLightState();
+}
+
+
+//
+module.exports.setLightState = function (pId) {
+    // emit to all clients
+    io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""));
 }
 
 
