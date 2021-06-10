@@ -748,6 +748,7 @@ function newGame() {
                         if (ROOMS[p.room].animations != null) {
 
                             let bgAnim = createSprite(0, 0, 128, 100);
+                            bgAnim.background = true;
                         
                             // this example manages a 128x6400 spritesheet (64 frames of 128x100)
                             // there are 16 different light conditions x 4 frames each animation
@@ -1161,13 +1162,18 @@ function newGame() {
         location.reload(true);
     });
 
-    // TODO: move this to clientMod???
-    socket.on("onLights",
-        function (msg) {
-            if (socket.id) {
-                allSprites[0].changeAnimation('bg' + msg);
-                console.log('change lights ' + msg);
-            }
+    // listen to change background anim
+    socket.on("changeBgAnim", function (animName) {
+        // console.log('client bgAnim listener', animName);
+        if (socket.id) {
+            let background;
+            allSprites.forEach((sprite) => {
+                if (sprite.background === true) {
+                    sprite.changeAnimation(animName);
+                }
+            })
+            
+        }
     });
 
     //I can now open it
