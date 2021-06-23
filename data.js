@@ -43,13 +43,20 @@ module.exports.ROOMS = {
             hce9600: { cmd: "enter", room: "cave", label: "cave", point: [34, 70], enterPoint: [30, 19], obstacle: false },
             // #15ce00
             h15ce00: { cmd: "enter", room: "calle", label: "Calle Ave María", point: [112, 71], enterPoint: [64, 50], obstacle: false },
+            // #00ffff
+            h00ffff: { cmd: "action", label: "classroom switch", point: [43, 70], actionId: 'ClassroomLight', obstacle: false },
+            // #ff00ff
+            hff00ff: { cmd: "action", label: "cave switch", point: [47, 70], actionId: 'CaveLight', obstacle: false },
+            // #ffff00
+            hffff00: { cmd: "action", label: "hall switch", point: [51, 70], actionId: 'HallLight', obstacle: false },
         },
         things: {
             columna: { file: "/barricuda/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
             mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true },
-            caveLight: {  file: "/barricuda/interruptor.png", label: "Interruptor", command: { cmd: "action", actionId: 'CaveLight' }, position: [14, 95], visible: true },
-            hallLight: {  file: "/barricuda/interruptor.png", label: "Interruptor", command: { cmd: "action", actionId: 'HallLight' }, position: [21, 95], visible: true },
-            classroomLight: {  file: "/barricuda/interruptor.png", label: "Interruptor", command: { cmd: "action", actionId: 'ClassroomLight' }, position: [7, 95], visible: true },
+            // caveLight: {  file: "/barricuda/interruptor-pared.png", position: [43, 57], visible: true },
+            // hallLight: {  file: "/barricuda/interruptor-pared.png", position: [47, 57], visible: true },
+            // classroomLight: {  file: "/barricuda/interruptor-pared.png", position: [51, 57], visible: true },
+            
         }
     },
     classroom: {

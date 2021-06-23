@@ -2021,7 +2021,7 @@ function canvasPressed() {
 //when I click to move
 function canvasReleased() {
 
-    //print("CLICK " + mouseButton);
+    // print(["CLICK ", mouseButton , round(mouseX/2), round(mouseY/2)].join(" "));
 
     if (screen == "error") {
     }
