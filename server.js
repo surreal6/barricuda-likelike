@@ -1,25 +1,15 @@
 //check README.md
 
-const tLog = require('./src/traffic-log-management');
-
 //load secret config vars
 require("dotenv").config();
 const DATA = require("./data");
 
 //.env content
 /*
-ADMINS = username1|pass1,username2|pass2
+ADMINS=username1|pass1,username2|pass2
 PORT = 3000
-TRAFFICLOG = true
 */
 
-let allowTrafficLog = false;
-
-if (process.env.TRAFFICLOG != null) {
-    allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
-}
-
-// console.log('traffic log ', allowTrafficLog);
 
 var port = process.env.PORT || 3000;
 
@@ -146,13 +136,8 @@ io.on("connection", function (socket) {
 
             if (playerInfo.nickName == "")
                 console.log("New user joined the server in lurking mode " + socket.id + " " + IP);
-            else {
-                // avoid password appear in the log
-                console.log("New user joined the game: " + playerInfo.nickName.split('|')[0] + " avatar# " + playerInfo.avatar + " colors# " + playerInfo.colors + " " + socket.id);
-
-                if (allowTrafficLog === true)
-                    tLog.appendToLog([socket.id, 'join', playerInfo.nickName.split('|')[0], Date.now(), IP ? IP : '-', '\n'].join(','));
-            }
+            else
+                console.log("New user joined the game: " + playerInfo.nickName + " avatar# " + playerInfo.avatar + " colors# " + playerInfo.colors + " " + socket.id);
 
             var roomPlayers = 1;
             var myRoom = io.sockets.adapter.rooms[playerInfo.room];
@@ -306,9 +291,6 @@ io.on("connection", function (socket) {
             //delete the player object
             delete gameState.players[socket.id];
             console.log("There are now " + Object.keys(gameState.players).length + " players on this server");
-
-            if (allowTrafficLog === true)
-                tLog.appendToLog([socket.id, "disconnect", Date.now(), "\n"].join(','));
         }
         catch (e) {
             console.log("Error on disconnect, object malformed from" + socket.id + "?");
@@ -434,9 +416,6 @@ io.on("connection", function (socket) {
                 socket.leave(obj.from);
                 socket.join(obj.to);
 
-                if (allowTrafficLog === true)
-                    tLog.appendToLog([socket.id, "room", obj.to, Date.now(), "\n"].join(','));
-
 
                 //broadcast the change to everybody in the current room
                 //from the client perspective leaving the room is the same as disconnecting
@@ -524,8 +503,6 @@ io.on("connection", function (socket) {
         try {
             //console.log(socket.id + " back from AFK");
             io.to(obj.room).emit("playerFocused", socket.id);
-            if (allowTrafficLog === true)
-                tLog.appendToLog([socket.id, "focus", Date.now(), "\n"].join(','));
         } catch (e) {
             console.log("Error on focus " + socket.id + "?");
             console.error(e);
@@ -536,8 +513,6 @@ io.on("connection", function (socket) {
         try {
             //console.log(socket.id + " is AFK");
             io.to(obj.room).emit("playerBlurred", socket.id)
-            if (allowTrafficLog === true)
-                tLog.appendToLog([socket.id, "blur", Date.now(), "\n"].join(','));
         } catch (e) {
             console.log("Error on blur " + socket.id + "?");
             console.error(e);
@@ -791,7 +766,7 @@ function IPByName(nick) {
 
 //listen to the port 3000 this powers the whole socket.io
 http.listen(port, function () {
-    console.log("listening on *:" + port);
+    console.log("listening on *:3000");
 });
 
 //check the last activity and disconnect players that have been idle for too long
