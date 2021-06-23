@@ -10,6 +10,8 @@ ADMINS=username1|pass1,username2|pass2
 PORT = 3000
 */
 
+let allowTrafficLog = false;
+// console.log('traffic log ', allowTrafficLog);
 
 var port = process.env.PORT || 3000;
 
@@ -32,7 +34,10 @@ var app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
 var Filter = require("bad-words");
+const { fstat } = require('fs');
 
+const tLog = require('./src/traffic-log-management');
+const mailer = require('./src/mailer');
 
 //time before disconnecting (forgot the tab open?)
 var ACTIVITY_TIMEOUT = 10 * 60 * 1000;
@@ -80,9 +85,16 @@ var banned = [];
 //when a client connects serve the static files in the public directory ie public/index.html
 app.use(express.static("public"));
 
+// setup traffic log and mailer
+if (process.env.TRAFFICLOG != null) {
+    allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
 
-
-
+    if (process.env.SENDLOG != null && process.env.TRAFFICLOG.toLowerCase() === 'true') {
+        mailer.setupMail(mailer);
+    }
+    
+    tLog.serverStart(START_TIME);
+}
 
 //when a client connects the socket is established and I set up all the functions listening for events
 io.on("connection", function (socket) {
