@@ -8,6 +8,14 @@ const DATA = require("./data");
 /*
 ADMINS=username1|pass1,username2|pass2
 PORT = 3000
+TRAFFICLOG = true
+SENDLOG = true
+MAILHOST = SMTP ongoing server
+MAILUSER = mail@domain.com
+MAILPASS = *****
+MAILTO = to@domain.com
+MAILBCC = bcc@domain.com
+TIMEZONE = "Europe/Madrid"
 */
 
 let allowTrafficLog = false;
@@ -96,6 +104,12 @@ if (process.env.TRAFFICLOG != null) {
     allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
 
     if (process.env.SENDLOG != null && process.env.TRAFFICLOG.toLowerCase() === 'true') {
+
+        let timezone = "GMT";
+        if (process.env.TIMEZONE != null) {
+            timezone = process.env.TIMEZONE;
+        }
+
         // every day at 00:00 it changes log filename
         cron.schedule('0 0 0 * * *', () => {
             console.log('--> cron activity: change log filename');
@@ -104,7 +118,7 @@ if (process.env.TRAFFICLOG != null) {
             // testing
             mailer.sendMail('cron 00:00', 'change log filename ' + logFileName);
         }, {
-            timezone: "Europe/Madrid"
+            timezone: timezone
         });
 
         // every day at 04:00 it collects all previous day logs
@@ -115,7 +129,7 @@ if (process.env.TRAFFICLOG != null) {
             // testing
             mailer.sendMail('cron 04:00', 'generate yesterday resume ' + dailyResume);
         }, {
-            timezone: "Europe/Madrid"
+            timezone: timezone
         });
 
         // every monday at 06:00 it collects all daily logs from previous week
@@ -126,7 +140,7 @@ if (process.env.TRAFFICLOG != null) {
             // testing
             mailer.sendMail('cron monday 06:00', 'generate weekly resume ' + weeklyResume);
         }, {
-            timezone: "Europe/Madrid"
+            timezone: timezone
         });
     
         // every monday at 06:30 it sends a mail with weekly report
@@ -137,7 +151,7 @@ if (process.env.TRAFFICLOG != null) {
             // testing
             mailer.sendMail('cron monday 06:30', 'send weekly resume');
         }, {
-            timezone: "Europe/Madrid"
+            timezone: timezone
         });
     }
     
