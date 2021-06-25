@@ -8,8 +8,18 @@ const DATA = require("./data");
 /*
 ADMINS=username1|pass1,username2|pass2
 PORT = 3000
+TRAFFICLOG = true
+SENDLOG = true
+MAILHOST = SMTP ongoing server
+MAILUSER = mail@domain.com
+MAILPASS = *****
+MAILTO = to@domain.com
+MAILBCC = bcc@domain.com
+TIMEZONE = "Europe/Madrid"
 */
 
+let allowTrafficLog = false;
+// console.log('traffic log ', allowTrafficLog);
 
 var port = process.env.PORT || 3000;
 
@@ -32,7 +42,16 @@ var app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
 var Filter = require("bad-words");
+const { fstat } = require('fs');
 
+// store the name of the current log file
+let logFileName = '';
+
+// traffic log and mailer modules
+const tLog = require('./src/traffic-log-management');
+const mailer = require('./src/mailer');
+const cron = require('node-cron');
+const { log } = require("util");
 
 //time before disconnecting (forgot the tab open?)
 var ACTIVITY_TIMEOUT = 10 * 60 * 1000;
@@ -80,13 +99,67 @@ var banned = [];
 //when a client connects serve the static files in the public directory ie public/index.html
 app.use(express.static("public"));
 
+// setup traffic log and mailer
+if (process.env.TRAFFICLOG != null) {
+    allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
 
+    if (process.env.SENDLOG != null && process.env.TRAFFICLOG.toLowerCase() === 'true') {
 
+        let timezone = "GMT";
+        if (process.env.TIMEZONE != null) {
+            timezone = process.env.TIMEZONE;
+        }
 
+        // every day at 00:00 it changes log filename
+        cron.schedule('0 0 0 * * *', () => {
+            console.log('--> cron activity: change log filename');
+            logFileName = tLog.changeLogFileName(Date.now());
+            console.log('new log filename ' + logFileName);
+            // testing
+            mailer.sendMail('cron 00:00', 'change log filename ' + logFileName);
+        }, {
+            timezone: timezone
+        });
+
+        // every day at 04:00 it collects all previous day logs
+        // and move logs to archive folder
+        cron.schedule('0 4 * * *', () => {
+            console.log('--> cron activity: generate yesterday resume');
+            let dailyResume = tLog.generateDailyLog();
+            // testing
+            mailer.sendMail('cron 04:00', 'generate yesterday resume ' + dailyResume);
+        }, {
+            timezone: timezone
+        });
+
+        // every monday at 06:00 it collects all daily logs from previous week
+        // and move daily logs to archiveDaily folder
+        cron.schedule('0 6 * * 1', () => {
+            console.log('--> cron activity: generate weekly resume');
+            let weeklyResume = tLog.generateWeeklyLog();
+            // testing
+            mailer.sendMail('cron monday 06:00', 'generate weekly resume ' + weeklyResume);
+        }, {
+            timezone: timezone
+        });
+    
+        // every monday at 06:30 it sends a mail with weekly report
+        // and move weekly logs to archiveWeekly folder
+        cron.schedule('30 6 * * 1', () => {
+            console.log('--> cron activity: send weekly resume');
+            tLog.sendWeeklyLog();
+            // testing
+            mailer.sendMail('cron monday 06:30', 'send weekly resume');
+        }, {
+            timezone: timezone
+        });
+    }
+    
+    logFileName = tLog.serverStart(START_TIME);
+}
 
 //when a client connects the socket is established and I set up all the functions listening for events
 io.on("connection", function (socket) {
-
 
     //this bit (middleware?) catches all incoming packets
     //I use to make my own lil rate limiter without unleashing 344525 dependencies
@@ -136,8 +209,15 @@ io.on("connection", function (socket) {
 
             if (playerInfo.nickName == "")
                 console.log("New user joined the server in lurking mode " + socket.id + " " + IP);
-            else
-                console.log("New user joined the game: " + playerInfo.nickName + " avatar# " + playerInfo.avatar + " colors# " + playerInfo.colors + " " + socket.id);
+            else {
+                // avoid password appear in the log
+                console.log("New user joined the game: " + playerInfo.nickName.split('|')[0] + " avatar# " + playerInfo.avatar + " colors# " + playerInfo.colors + " " + socket.id);
+
+                if (allowTrafficLog === true) {
+                    let data = [playerInfo.nickName.split('|')[0], playerInfo.room, IP ? IP : '-'];
+                    tLog.appendToLog(logFileName, socket.id, 'join', data);
+                }
+            }
 
             var roomPlayers = 1;
             var myRoom = io.sockets.adapter.rooms[playerInfo.room];
@@ -291,6 +371,9 @@ io.on("connection", function (socket) {
             //delete the player object
             delete gameState.players[socket.id];
             console.log("There are now " + Object.keys(gameState.players).length + " players on this server");
+
+            if (allowTrafficLog === true)
+                tLog.appendToLog(logFileName, socket.id, 'disconnect');
         }
         catch (e) {
             console.log("Error on disconnect, object malformed from" + socket.id + "?");
@@ -416,6 +499,8 @@ io.on("connection", function (socket) {
                 socket.leave(obj.from);
                 socket.join(obj.to);
 
+                if (allowTrafficLog === true)
+                    tLog.appendToLog(logFileName, socket.id, "room", [obj.to]);
 
                 //broadcast the change to everybody in the current room
                 //from the client perspective leaving the room is the same as disconnecting
@@ -503,6 +588,8 @@ io.on("connection", function (socket) {
         try {
             //console.log(socket.id + " back from AFK");
             io.to(obj.room).emit("playerFocused", socket.id);
+            if (allowTrafficLog === true)
+                tLog.appendToLog(logFileName, socket.id, 'focus');
         } catch (e) {
             console.log("Error on focus " + socket.id + "?");
             console.error(e);
@@ -513,6 +600,8 @@ io.on("connection", function (socket) {
         try {
             //console.log(socket.id + " is AFK");
             io.to(obj.room).emit("playerBlurred", socket.id)
+            if (allowTrafficLog === true)
+                tLog.appendToLog(logFileName, socket.id, "blur");
         } catch (e) {
             console.log("Error on blur " + socket.id + "?");
             console.error(e);
