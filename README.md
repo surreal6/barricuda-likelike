@@ -90,7 +90,15 @@ A few cron tasks will be created:
 
 * A weekly task every monday at 6:30AM to send the previous week log to defined emails.
 
+## Open links in an iframe in the current page
 
+Now you can define a link to open in an iframe inside the current page instead of open it in a new tab. For this, add this attribute in the command definition (valid for areas and things):
+
+    iframe: true
+
+In example:
+
+    h0066ff: { cmd: "text", iframe: true, label: "myLabel", point: [62, 77], txt: 'Intro text', lines: 1, url: "https://www.whatever.com" }
 
 ## force scale and offset to modify the appearance of things in the room.
 

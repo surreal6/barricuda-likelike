@@ -2072,8 +2072,7 @@ function canvasReleased() {
                     frame.setAttribute("src", longTextLink);
                 } else {
                     socket.emit("openLink", longTextLink);
-                    console.log(longTextLink);
-                    //window.open(longTextLink, "_blank");    
+                    window.open(longTextLink, "_blank");    
                 }
             }
 
