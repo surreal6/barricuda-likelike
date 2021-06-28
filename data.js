@@ -49,13 +49,12 @@ module.exports.ROOMS = {
             hff00ff: { cmd: "action", label: "cave switch", point: [47, 70], actionId: 'CaveLight', obstacle: false },
             // #ffff00
             hffff00: { cmd: "action", label: "hall switch", point: [51, 70], actionId: 'HallLight', obstacle: false },
+            // #0066ff
+            h0066ff: { cmd: "text", label: "La Barricuda", point: [88, 63], iframe: false, txt: 'La Barricuda fue la escuela de\ncreación audiovisual del colectivo\nAventuras Visuales de 2006 a 2009', lines: 3, url: "http://labarricuda.blogspot.com/2006/10/instalaciones.html", obstacle: false }
         },
         things: {
             columna: { file: "/barricuda/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
-            mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true },
-            // caveLight: {  file: "/barricuda/interruptor-pared.png", position: [43, 57], visible: true },
-            // hallLight: {  file: "/barricuda/interruptor-pared.png", position: [47, 57], visible: true },
-            // classroomLight: {  file: "/barricuda/interruptor-pared.png", position: [51, 57], visible: true },
+            mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "http://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
             
         }
     },
@@ -75,6 +74,8 @@ module.exports.ROOMS = {
             //h will be replaced by #
             // #ff77a8
             hff77a8: { cmd: "enter", room: "hall", label: "hall", point: [118, 84], enterPoint: [20, 84], obstacle: false },
+            // #0066ff
+            h0066ff: { cmd: "text", iframe: true, label: "Cortometrajes", point: [62, 77], txt: 'Entre 2003 y 2009 los aventureros visuales realizaron casi un centenar de cortometrajes y piezas audiovisuales', lines: 4, url: "https://www.youtube.com/embed/videoseries?list=PLFF29FEE8F9D192C9", obstacle: false }
         },
         things: {
             silla1: { file: "/barricuda/sillas.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },

@@ -163,6 +163,8 @@ var longTextAlign;
 var longTextLink = "";
 var LONG_TEXT_BOX_W = 220;
 var LONG_TEXT_PADDING = 4;
+// to switch between blank page or iframe when opening links
+var sendToIframe = false;
 
 //To show when banned or disconnected, disables the client on black screen
 var errorMessage = "";
@@ -1591,6 +1593,16 @@ function scaleCanvas() {
     var container = document.getElementById("canvas-container");
     container.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: " + HEIGHT * canvasScale + "px");
 
+    // scale iframe to always match canvas-container
+    var frame = document.getElementById("iframe");
+    frame.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: " + HEIGHT * canvasScale + "px");
+
+    // if frame in use, make it active once rescaled
+    if (me && me.activeLink && me.activeLink !== "") {
+        frame.style.pointerEvents = "inherit";
+        frame.style.opacity = 1;
+    }
+
     var form = document.getElementById("interface");
     form.setAttribute("style", "width:" + WIDTH * canvasScale + "px;");
 
@@ -2033,11 +2045,40 @@ function canvasReleased() {
         //exit text
         if (longText != "" && longText != SETTINGS.INTRO_TEXT) {
 
-            if (longTextLink != "")
-                window.open(longTextLink, "_blank");
+            if (longTextLink != "") {
+                if (sendToIframe === true) {
+                    socket.emit("openIframe", longTextLink);
+                    me.activeLink = longTextLink;
+
+                    var frame = document.getElementById("iframe");
+
+                    // make iframe visible onload
+                    frame.onload = function() {
+                        if (this.src === "") {
+                            socket.emit("exitIframe", longTextLink);
+                        } else {
+                            this.style.pointerEvents = "inherit";
+                            this.style.opacity = 1;
+
+                            var exitButton = document.getElementById("exit-frame-button");
+                            exitButton.style.display = 'inherit';
+
+                            var talkForm = document.getElementById("talk-form");
+                            talkForm.style.display = 'none';
+                        }
+                    };
+
+                    // load link
+                    frame.setAttribute("src", longTextLink);
+                } else {
+                    socket.emit("openLink", longTextLink);
+                    window.open(longTextLink, "_blank");    
+                }
+            }
 
             longText = "";
             longTextLink = "";
+            sendToIframe = false;
         }
         else if (me != null) {
 
@@ -2101,6 +2142,27 @@ function canvasReleased() {
         }
     }
 
+}
+
+// make frame invisible and talkForm visible again
+function exitFrame() {
+    socket.emit("closeIframe", me.activeLink);
+
+    var frame = document.getElementById("iframe");
+    frame.onload = function() {
+        this.style.pointerEvents = "none";
+        this.style.opacity = 0;
+
+        var exitButton = document.getElementById("exit-frame-button");
+        exitButton.style.display = 'none';
+
+        var talkForm = document.getElementById("talk-form");
+        talkForm.style.display = 'inherit';
+
+        me.activeLink = "";
+    };
+
+    frame.setAttribute("src", "");
 }
 
 //queue a command, move to the point
@@ -2215,6 +2277,11 @@ function executeCommand(c) {
                     longTextLink = "";
                 else
                     longTextLink = c.url;
+
+                if (c.iframe === true)
+                    sendToIframe = true;
+                else
+                    sendToIframe = false;
 
             }
             else
@@ -2502,7 +2569,8 @@ function createThing(thing, id) {
         newSprite.command = thing.command;
 
         newSprite.onMouseReleased = function () {
-            if (rolledSprite == this)
+            // avoid to trigger the thing command if a Link is being loading into the iframe
+            if (rolledSprite == this && me.activeLink === "")
                 moveToCommand(this.command);
         };
     }

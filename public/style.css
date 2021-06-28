@@ -26,6 +26,18 @@ body {
 	color:#000;
 }
 
+#iframe {
+    top: 0px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    z-index: 2;
+    background-color: #000c;
+    opacity: 0;
+    pointer-events: none;
+}
+
 canvas {
 	z-index: 1;
 	display: block;
@@ -112,6 +124,7 @@ canvas {
 }
 
 .talk-button,
+.exit-frame-button,
 .join-button,
 .user-button,
 .avatar-button {
@@ -146,7 +159,10 @@ canvas {
   float: left;
   min-width: 120px;
   width:28%;
-  
+}
+
+.exit-frame-button {
+    display: inline-block;
 }
 
 #info {
