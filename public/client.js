@@ -163,6 +163,8 @@ var longTextAlign;
 var longTextLink = "";
 var LONG_TEXT_BOX_W = 220;
 var LONG_TEXT_PADDING = 4;
+// to check if longText is active (avoid to trigger thing's commands)
+var longTextActive = false;
 // to switch between blank page or iframe when opening links
 var sendToIframe = false;
 
@@ -726,6 +728,9 @@ function newGame() {
                     //click on me = emote
                     me.sprite.onMousePressed = function () { socket.emit("emote", { room: me.room, em: true }); };
                     me.sprite.onMouseReleased = function () { socket.emit("emote", { room: me.room, em: false }); };
+
+                    // to store iframe link (needed to reload iframe on window resize)
+                    me.activeLink = "";
 
                     room = p.room;
 
@@ -1510,6 +1515,8 @@ function update() {
         //long text above everything
         if (longText != "" && nickName != "") {
 
+            longTextActive = true;
+
             noStroke();
             textFont(font, FONT_SIZE);
             textLeading(TEXT_LEADING);
@@ -1558,7 +1565,10 @@ function update() {
                 fill(LABEL_NEUTRAL_COLOR);
                 text(longText, floor(width / 2 - tw / 2 + LONG_TEXT_PADDING - 1), floor(height / 2 - th / 2) + TEXT_LEADING - 3, floor(tw));
             }
-        }//end long text
+        } else {
+            longTextActive = false;
+        }
+        //end long text
 
         if (nickName == "" && (logoCounter < LOGO_STAY || LOGO_STAY == -1)) {
             logoCounter += deltaTime;
@@ -2569,9 +2579,11 @@ function createThing(thing, id) {
         newSprite.command = thing.command;
 
         newSprite.onMouseReleased = function () {
-            // avoid to trigger the thing command if a Link is being loading into the iframe
-            if (rolledSprite == this && me.activeLink === "")
-                moveToCommand(this.command);
+            // avoid to trigger the thing command if a longText is active
+            if (longTextActive === false) {
+                if (rolledSprite == this)
+                    moveToCommand(this.command);
+            }
         };
     }
 
