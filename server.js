@@ -619,6 +619,33 @@ io.on("connection", function (socket) {
         }
     });
 
+    socket.on("openLink", function (link) {
+        try {
+            tLog.appendToLog(logFileName, socket.id, "openLink", [link]);
+        } catch (e) {
+            console.log("Error on openLink " + socket.id + " listener?");
+            console.error(e);
+        }
+    })
+
+    socket.on("openIframe", function (link) {
+        try {
+            tLog.appendToLog(logFileName, socket.id, "openIframe", [link]);
+        } catch (e) {
+            console.log("Error on openIframe " + socket.id + " listener?");
+            console.error(e);
+        }
+    })
+
+    socket.on("closeIframe", function (link) {
+        try {
+            tLog.appendToLog(logFileName, socket.id, "closeIframe", [link]);
+        } catch (e) {
+            console.log("Error on closeIframe " + socket.id + " listener?");
+            console.error(e);
+        }
+    })
+
 });
 
 
