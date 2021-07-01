@@ -1,7 +1,7 @@
 {
-    "name": "chat",
+    "name": "barricuda-chat",
     "version": "0.0.1",
-    "description": "example",
+    "description": "likelike custom version",
     "scripts": {
         "start": "node server.js"
     },
