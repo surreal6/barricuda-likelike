@@ -6,7 +6,7 @@
         "type": "git",
         "url": "https://github.com/surreal6/barricuda-likelike"
     },
-    "license" : "LGPL-2.1-only",    
+    "license": "LGPL-2.1-only",
     "scripts": {
         "start": "node server.js"
     },
