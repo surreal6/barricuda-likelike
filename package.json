@@ -2,6 +2,11 @@
     "name": "barricuda-chat",
     "version": "0.0.1",
     "description": "likelike custom version",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/surreal6/barricuda-likelike"
+    },
+    "license" : "LGPL-2.1-only",    
     "scripts": {
         "start": "node server.js"
     },
