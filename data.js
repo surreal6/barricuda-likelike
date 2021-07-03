@@ -38,7 +38,7 @@ module.exports.ROOMS = {
         areaColors: {
             //h will be replaced by #
             // #ff77a8
-            hff77a8: { cmd: "enter", room: "classroom", label: "classroom", point: [10, 84], enterPoint: [118, 84], obstacle: false },
+            hff77a8: { cmd: "enter", room: "classroom", label: "classroom", point: [10, 84], enterPoint: [118, 87], obstacle: false },
             // #ce9600
             hce9600: { cmd: "enter", room: "cave", label: "cave", point: [34, 70], enterPoint: [30, 19], obstacle: false },
             // #15ce00
@@ -73,17 +73,18 @@ module.exports.ROOMS = {
         areaColors: {
             //h will be replaced by #
             // #ff77a8
-            hff77a8: { cmd: "enter", room: "hall", label: "hall", point: [118, 84], enterPoint: [20, 84], obstacle: false },
+            hff77a8: { cmd: "enter", room: "hall", label: "hall", point: [118, 87], enterPoint: [20, 84], obstacle: false },
             // #0066ff
-            h0066ff: { cmd: "text", iframe: true, label: "Cortometrajes", point: [62, 77], txt: 'Entre 2003 y 2009 los aventureros visuales realizaron casi un centenar de cortometrajes y piezas audiovisuales', lines: 4, url: "https://www.youtube.com/embed/videoseries?list=PLFF29FEE8F9D192C9", obstacle: false }
+            h0066ff: { cmd: "text", iframe: true, label: "Cortometrajes", point: [62, 67], txt: 'Entre 2003 y 2009 los aventureros visuales realizaron casi un centenar de cortometrajes y piezas audiovisuales', lines: 4, url: "https://www.youtube.com/embed/videoseries?list=PLFF29FEE8F9D192C9", obstacle: false },
+            // #00ff00
+            h00ff00: { cmd: "action", label: "Medvedkin", actionId: "Medvedkin", point: [84, 69], obstacle: false },
         },
         things: {
-            silla1: { file: "/barricuda/sillas.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
+            silla1: { file: "/barricuda/sillas2.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
             silla2: { file: "/barricuda/sillas.png", id: "silla2", scale: 1.6, position: [10, 65], frames: 1, frameDelay: 60, visible: true },
             silla3: { file: "/barricuda/sillas.png", id: "silla3", scale: 2, position: [10, 80], frames: 1, frameDelay: 60, visible: true },
         }
     },
-
     cave: {
         bg: "/barricuda/cueva-spritesheet.png",
         frames: 4,
@@ -94,7 +95,7 @@ module.exports.ROOMS = {
         pageBg: "#765f52",
         area: "/barricuda/cueva-areas.png",
         tint: "#fdeac8",
-        bubblesY: 44,
+        bubblesY: 14,
         spawn: [68, 60, 82, 70],
         areaColors: {
             //h will be replaced by #
