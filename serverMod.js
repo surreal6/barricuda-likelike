@@ -25,11 +25,11 @@ module.exports.initMod = function (io, gameState, DATA) {
     }
 
     // this turns on and off the projector every minute
-    setInterval(function () {
-        global.lightState[0] =  global.lightState[0] === 1 ? 0 : 1;
-        // emit change to all clients
-        io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""))
-    }, 60 * 1000); //every minute changes
+    // setInterval(function () {
+    //     global.lightState[0] =  global.lightState[0] === 1 ? 0 : 1;
+    //     // emit change to all clients
+    //     io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""))
+    // }, 60 * 1000); //every minute changes
 
     global.VIPList = [];
 
@@ -261,4 +261,9 @@ module.exports.setLightState = function (pId) {
     io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""));
 }
 
+module.exports.onMedvedkin = function (pId) {
+    global.lightState[0] =  global.lightState[0] === 1 ? 0 : 1;
+    // emit change to all clients
+    io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""))
+}
 
