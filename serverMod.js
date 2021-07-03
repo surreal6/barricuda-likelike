@@ -17,7 +17,7 @@ module.exports.initMod = function (io, gameState, DATA) {
 
     // lightState on and off 
     // projector, hall ,class, cave
-    global.lightState = [0, 0, 0, 0]
+    global.lightState = [0, 0, 0, 0];
 
     //global function ffs
     global.random = function (min, max) {
@@ -33,6 +33,78 @@ module.exports.initMod = function (io, gameState, DATA) {
 
     global.VIPList = [];
 
+    global.truffautTalk = [
+        "Es un buen sitio...",
+        "para una sala de montaje.",
+        "aquí cabrían muchas mesas",
+        "Y hackintosh con FCP",
+        "y con premiere",
+        "premiere es igual de malo que FCP",
+        "Una vez comiendo con Hitch",
+        "le dije la frase de Jan Desmut:",
+        "<<El equipo que come unido...",
+        "permanece unido.>>",
+        "y que eso luego se nota en las pelis.",
+        "¿sabes lo que me contesto?",
+        "que el espectador es gilipollas",
+        "¿como te quedas?",
+        "con moita calma, eso le dije a Hitch",
+        "bueno, vamos a lo que vamos...",
+        "pospo a tope!!!",
+        "¿que nos impide?",
+        "tal vez la impresora, que no funciona",
+        "¿las llaves? en el viriato, supongo",
+    ];
+
+    global.increaseTalkCounter = function() {
+        global.roomStates['cave'].talkCounter++;
+        if (global.roomStates['cave'].talkCounter > global.truffautTalk.length - 1) {
+            global.roomStates['cave'].talkCounter = 0;
+            global.roomStates['cave'].talk = false;
+        }
+    }
+
+    global.resetTruffaut = function() {
+        global.roomStates['cave'].talk = false;
+        global.roomStates['cave'].talkCounter = 0;
+        global.roomStates['cave'].followPlayer = false;
+    }
+
+    //Example of NPC creation and behavior
+    var truffaut = new NPC(
+        {
+            id: "truffaut",
+            nickName: "truffaut",
+            room: "cave",
+            x: 23,
+            y: 189,
+            avatar: 1,
+            colors: [2, 2, 1, 5],
+            labelColor: "#1e839d"
+        });
+
+    
+    truffaut.behavior = setTimeout(function ramble() {
+        var dice = random(0, 100);
+        var talkCounter = global.roomStates['cave'].talkCounter;
+        var talk = global.roomStates['cave'].talk;
+    
+        if (dice < 70) {
+            if (talk) {
+                truffaut.talk(global.truffautTalk[talkCounter]);
+                global.increaseTalkCounter();
+                truffaut.behavior = setTimeout(ramble, random(2000, 3000));
+            } else {
+                truffaut.move(random(10, 90) * 2, random(70, 78) * 2);
+                truffaut.behavior = setTimeout(ramble, random(2000, 3000));
+            }
+        } else if (dice < 90) {
+            truffaut.move(random(10, 90) * 2, random(70, 98) * 2);
+            truffaut.behavior = setTimeout(ramble, random(2000, 3000));
+        } else {
+            truffaut.behavior = setTimeout(ramble, random(2000, 3000));
+        }
+    }, random(2000, 3000));
 }
 
 // the cave uses the VIPRoom rules in original likelike
@@ -40,6 +112,13 @@ module.exports.caveJoin = function (playerObject, roomId) {
     // console.log(playerObject.nickName + " enters the VIP room");
     //...
     this.setLightState();
+
+    setTimeout(function() {
+        global.gameState.NPCs['truffaut'].talk('Hola aventurero');
+        setTimeout(function() {
+            global.roomStates['cave'].talk = true;
+        }, 1000)
+    }, 1000)
     
     global.VIPList.push(playerObject.id);
     if (global.VIPList.length > 2) {
@@ -51,6 +130,10 @@ module.exports.caveJoin = function (playerObject, roomId) {
             io.to(expelled).emit('godMessage', "Sorry, we had to expel you to make room for " + playerObject.nickName);
         }
 
+    }
+
+    if (global.VIPList.length === 1) {
+        global.resetTruffaut();
     }
 
 }
@@ -130,6 +213,10 @@ module.exports.caveLeave = function (playerObject, roomId) {
     var index = global.VIPList.indexOf(playerObject.id);
     if (index !== -1) {
         global.VIPList.splice(index, 1);
+    }
+
+    if (global.VIPList.length === 1) {
+        global.resetTruffaut();
     }
 
 }
