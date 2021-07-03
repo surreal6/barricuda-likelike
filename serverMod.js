@@ -33,13 +33,27 @@ module.exports.initMod = function (io, gameState, DATA) {
 
     global.VIPList = [];
 
+    global.roomStates = {
+        cave: {
+            talk: false,
+            talkCounter: 0
+        }
+    }
+
     global.truffautTalk = [
+        "Soy François Truffaut",
+        "me conoceras por...",
+        "los 400 golpes, la nouvelle vague,",
+        "y toda esa mandanga.",
+        "Está chulo esto,",
         "Es un buen sitio...",
         "para una sala de montaje.",
         "aquí cabrían muchas mesas",
         "Y hackintosh con FCP",
         "y con premiere",
         "premiere es igual de malo que FCP",
+        "esto de aventuras visuales esta muy bien",
+        "¿se puede uno apuntar?",
         "Una vez comiendo con Hitch",
         "le dije la frase de Jan Desmut:",
         "<<El equipo que come unido...",
@@ -52,8 +66,14 @@ module.exports.initMod = function (io, gameState, DATA) {
         "bueno, vamos a lo que vamos...",
         "pospo a tope!!!",
         "¿que nos impide?",
-        "tal vez la impresora, que no funciona",
-        "¿las llaves? en el viriato, supongo",
+        "tal vez la impresora, que no funciona.",
+        "¿que donde están las llaves? ",
+        "en el viriato, me han dicho",
+        "no se lo que es",
+        "creo que es la Jane d'arc zamorana",
+        "pero no se como salir de aquí",
+        "ahora, si me permites",
+        "tengo que hacer una introspección."
     ];
 
     global.increaseTalkCounter = function() {

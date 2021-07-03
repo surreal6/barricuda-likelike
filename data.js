@@ -75,15 +75,16 @@ module.exports.ROOMS = {
             // #ff77a8
             hff77a8: { cmd: "enter", room: "hall", label: "hall", point: [118, 87], enterPoint: [20, 84], obstacle: false },
             // #0066ff
-            h0066ff: { cmd: "text", iframe: true, label: "Cortometrajes", point: [62, 67], txt: 'Entre 2003 y 2009 los aventureros visuales realizaron casi un centenar de cortometrajes y piezas audiovisuales', lines: 4, url: "https://www.youtube.com/embed/videoseries?list=PLFF29FEE8F9D192C9", obstacle: false }
+            h0066ff: { cmd: "text", iframe: true, label: "Cortometrajes", point: [62, 67], txt: 'Entre 2003 y 2009 los aventureros visuales realizaron casi un centenar de cortometrajes y piezas audiovisuales', lines: 4, url: "https://www.youtube.com/embed/videoseries?list=PLFF29FEE8F9D192C9", obstacle: false },
+            // #00ff00
+            h00ff00: { cmd: "action", label: "Medvedkin", actionId: "Medvedkin", point: [84, 69], obstacle: false },
         },
         things: {
-            silla1: { file: "/barricuda/sillas.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
+            silla1: { file: "/barricuda/sillas2.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
             silla2: { file: "/barricuda/sillas.png", id: "silla2", scale: 1.6, position: [10, 65], frames: 1, frameDelay: 60, visible: true },
             silla3: { file: "/barricuda/sillas.png", id: "silla3", scale: 2, position: [10, 80], frames: 1, frameDelay: 60, visible: true },
         }
     },
-
     cave: {
         bg: "/barricuda/cueva-spritesheet.png",
         frames: 4,
