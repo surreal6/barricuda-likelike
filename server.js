@@ -845,6 +845,16 @@ function adminCommand(adminSocket, str) {
                 cmd.shift();
                 io.sockets.emit("onLights", cmd);
                 break;
+            
+            //trafic management
+            case "pastlogs":
+                cmd.shift();
+                tLog.generateUnstoredDailyLogs();
+                break;
+            case "pastDailylogs":
+                cmd.shift();
+                tLog.generateUnstoredLogs();
+                break;
         }
     }
     catch (e) {
