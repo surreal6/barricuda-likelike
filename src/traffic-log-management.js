@@ -1,9 +1,14 @@
+const { dir } = require('console');
 const fs = require('fs');
 const path = require('path');
 const { start } = require('repl');
 const mailer = require('./mailer');
 
 module.exports = {
+    createDirectory: function(dirName) {
+        const homedir =path.join(__dirname, '..');
+        fs.mkdir(path.join(homedir, dirName), function() {});
+    },
     timeToFileName: function (time) {
         return time.toISOString().split('.')[0];
     },
@@ -37,6 +42,10 @@ module.exports = {
     serverStart: function (startTime) {
         startTime = this.timeToLocale(new Date(startTime))
         startTime = this.timeToFileName(new Date(startTime));
+        this.createDirectory('logs');
+        this.createDirectory('logs/archive');
+        this.createDirectory('logs/archiveDaily');
+        this.createDirectory('logs/archiveWeekly');
         let logFileName = './logs/' + startTime + '.txt';
         this.writeToFile(logFileName, startTime + ',serverStart\n');
         return logFileName;
@@ -48,31 +57,77 @@ module.exports = {
         // this.writeToFile(logFileName, time + ',new log file\n');
         return logFileName;
     },
-    generateDailyLog: function () {
+    getYesterdayString: function() {
         let date = new Date();
         var yesterday = new Date(date.getTime());
         yesterday.setDate(date.getDate() - 1);
-
         let yesterdayString = yesterday.toISOString().split('T')[0];
+        return yesterdayString;
+    },
+    getUnstoredLogsFromPath: function(dirPath, callback) {
+        let dateCollection = [];
+        fs.readdir(dirPath, function (err, files) {
+            for (let index = 0; index < files.length; index++) {
+                const file = files[index];
+                if (file.split('.')[1] === 'txt' && file.split('T').length > 1) {
+                    let date = file.split('T')[0];
+                    if (dateCollection.includes(date) === false) {
+                        dateCollection.push(date);
+                    }
+                } 
+            };
+            callback(dateCollection);
+        });
+    },
+    getUnstoredDailyLogsFromPath: function (dirPath, callback) {
+        let dateCollection = [];
+        fs.readdir(dirPath, function (err, files) {
+            for (let index = 0; index < files.length; index++) {
+                const file = files[index];
+                if (file.split('.')[1] === 'txt' && file.split('T').length === 1) {
+                    let date = file.split('T')[0];
+                    if (dateCollection.includes(date) === false) {
+                        dateCollection.push(date);
+                    }
+                } 
+            };
+            callback(dateCollection);
+        });
+    },
+    generateUnstoredDailyLogs: function() {
+        const archiveDir = path.join(__dirname, '../logs');
+        const generateDailyLog = this.generateDailyLog;
+        this.getUnstoredLogsFromPath(archiveDir, function(dates) {
+            console.log(dates);
+            for (let index = 0; index < dates.length; index++) {
+                const file = dates[index];
+                generateDailyLog(file);
+            }
+        });
+    },
+    // date = '2021-06-24';
+    generateDailyLog: function (date) {
+        if (date === undefined) {
+            date = this.getYesterdayString();
+        }
+
         let logDir = path.join(__dirname, '../logs');
         let archiveDir = path.join(__dirname, '../logs/archive');
 
-        // fake date for testing purposes
-        // yesterdayString = '2021-06-24';
-        let dailyLog = path.join(logDir, yesterdayString + '.txt');
+        let dailyLog = path.join(logDir, date + '.txt');
 
         let appendFile = fs.appendFile;
         fs.readdir(logDir, function (err, files) {
             let fileCount = 0;
             for (let index = 0; index < files.length; index++) {
                 const file = files[index];
-                if (file !== yesterdayString && file.split('T')[0] === yesterdayString) {
+                if (file !== date && file.split('T')[0] === date) {
                     fileCount++;
                     let filePath = path.join(logDir, file);
                     fs.readFile(filePath, function(err, buf) {
                         appendFile(dailyLog, buf.toString(), function() {
                             fs.rename(filePath, path.join(archiveDir, file), function() {
-                                console.log(`File ` + yesterdayString + `.txt is updated successfully!`);
+                                console.log(`File ` + date + `.txt is updated successfully!`);
                                 console.log('moving log ' + file + ' to archive folder');
                             });
                         });
@@ -80,13 +135,13 @@ module.exports = {
                 }
             }
             if (fileCount > 0) {
-                console.log('--> daily log ' + yesterdayString + '.txt generated');
+                console.log('--> daily log ' + date + '.txt generated');
             } else {
                 console.log('--> skip daily generation');
             }
         });
 
-        return yesterdayString;
+        return date;
     },
     getPreviousWeekArray: function () {
         let currentDate = new Date();
@@ -140,6 +195,35 @@ module.exports = {
         });
 
         return weeklyString;
+    },
+    generateFilesLog: function(files) {
+        let logDir = path.join(__dirname, '../logs');
+        let archiveDir = path.join(__dirname, '../logs/archiveDaily');
+        let archivesLog = path.join(logDir, files[0].split('.txt')[0] + '_to_' + files[files.length - 1].split('.txt')[0] + '.txt');
+
+        // !!! UNSORTED !!!
+
+        let appendFile = fs.appendFile;
+        for (let index = 0; index < files.length; index++) {
+            const file = files[index];
+            let filePath = path.join(logDir, file);
+            fs.readFile(filePath, function(err, buf) {
+                appendFile(archivesLog, buf.toString(), function() {
+                    fs.rename(filePath, path.join(archiveDir, file), function() {
+                        console.log(`File ` + archivesLog + `.txt is updated successfully!`);
+                        console.log('moving daily ' + file + ' to archive folder');
+                    });
+                });
+            })
+        }
+    },
+    generateUnstoredLogs: function () {
+        const archiveDir = path.join(__dirname, '../logs');
+        const generateFilesLog = this.generateFilesLog;
+        this.getUnstoredDailyLogsFromPath(archiveDir, function(files) {
+            console.log(files);
+            generateFilesLog(files);
+        });
     },
     sendWeeklyLog: function () {
         let weekDates = this.getPreviousWeekArray();
