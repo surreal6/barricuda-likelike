@@ -12,6 +12,8 @@ var VERSION = "1.0";
 //for testing purposes I can skip the login phase
 //and join with a random avatar
 var QUICK_LOGIN = false;
+var DEBUG_CLICKS = false;
+var DEBUG_SPRITES = false;
 
 //true: preview the room as invisible user
 //false: go directly to the login without previewing the room
@@ -1410,7 +1412,8 @@ function update() {
 
         //set the existing sprites' depths in relation to their position
         for (var i = 0; i < allSprites.length; i++) {
-            //allSprites[i].debug = true;
+            if (DEBUG_SPRITES)
+                allSprites[i].debug = true;
 
             var dOff = 0;
 
@@ -2043,7 +2046,8 @@ function canvasPressed() {
 //when I click to move
 function canvasReleased() {
 
-    // print(["CLICK ", mouseButton , round(mouseX/2), round(mouseY/2)].join(" "));
+    if (DEBUG_CLICKS)
+        print(["CLICK ", window.colorClicked, mouseButton , round(mouseX/2), round(mouseY/2)].join(" "));
 
     if (screen == "error") {
     }
@@ -2200,6 +2204,10 @@ function getCommand(c, roomId) {
     try {
         //turn color into string
         var cString = color(c).toString("#rrggbb");//for com
+
+        if (DEBUG_CLICKS) {
+            window.colorClicked = cString;
+        }
 
         var areaColors = ROOMS[roomId].areaColors;
         var command;
