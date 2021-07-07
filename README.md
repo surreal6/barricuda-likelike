@@ -16,6 +16,13 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
 # New features:
 
+## Debug more accesible
+
+In client.js you will find these selectors. Just set them to true.
+
+    var QUICK_LOGIN = false;
+    var DEBUG_CLICKS = false;
+    var DEBUG_SPRITES = false;
 ## Traffic log
 
 Add this to .env file:
