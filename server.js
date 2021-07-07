@@ -929,8 +929,8 @@ global.NPC = function (o) {
     this.colors = o.colors;
     this.x = o.x * 2;
     this.y = o.y * 2;
-    this.destinationX = o.x;
-    this.destinationY = o.y;
+    this.destinationX = o.x * 2;
+    this.destinationY = o.y * 2;
 
     if (o.labelColor != null)
         this.labelColor = o.labelColor;
