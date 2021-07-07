@@ -2293,6 +2293,11 @@ function executeCommand(c) {
                 else
                     sendToIframe = false;
 
+                if (c.actionId != null) {
+                    
+                    socket.emit("action", c.actionId);
+                }
+
             }
             else
                 print("Warning for text: make sure to specify arg as text")
