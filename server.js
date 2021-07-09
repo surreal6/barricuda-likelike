@@ -931,6 +931,7 @@ global.NPC = function (o) {
     this.y = o.y * 2;
     this.destinationX = o.x * 2;
     this.destinationY = o.y * 2;
+    this.actionId = o.actionId;
 
     if (o.labelColor != null)
         this.labelColor = o.labelColor;
@@ -952,7 +953,8 @@ global.NPC = function (o) {
             x: this.destinationX,
             y: this.destinationY,
             destinationX: this.destinationX,
-            destinationY: this.destinationY
+            destinationY: this.destinationY,
+            actionId: this.actionId
         });
     }
 
