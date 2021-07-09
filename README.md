@@ -16,6 +16,30 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
 # New features:
 
+## Define actions on NPC clicks
+
+You can define actions to be triggered when clicking NPCs. In this example, clicking the 'divulgadorNpc will execute onDivulgador function, if it exist in your serverMod file.
+
+    var divulgadorNpc = new NPC({
+        id: "divulgador",
+        nickName: "divulgador",
+        room: "r02Entrada",
+        x: 64,
+        y: 81,
+        avatar: 1,
+        colors: [2, 2, 1, 5],
+        labelColor: "#1e839d",
+        actionId: "Divulgador"
+    });
+
+## Define actions in text commands
+
+You can define an action inside a text command, to be executed at the time of running the command, or add the postAction attribute to force the execution after closing the text.
+
+    hff00ff: { cmd: "text", txt: "some text", lines: 1, postAction: true, actionId: "MyAction",  label: "click me", point: [65, 95], obstacle: false },
+
+This example runs onMyAction function after the text is closed. onMyAction function must be declared in your serverMod file.
+
 ## Debug more accesible
 
 In client.js you will find these selectors. Just set them to true.

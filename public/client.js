@@ -170,6 +170,8 @@ var longTextActive = false;
 // to switch between blank page or iframe when opening links
 var sendToIframe = false;
 
+var nextAction = "";
+
 //To show when banned or disconnected, disables the client on black screen
 var errorMessage = "";
 
@@ -899,6 +901,11 @@ function newGame() {
                 //console.log("INTRO from " + p.room + " " + me.room);
 
                 players[p.id] = new Player(p);
+
+                // store actionId property in client side NPCs
+                if (p.actionId) {
+                    players[p.id].actionId = p.actionId;
+                }
 
                 if (p.room != null)
                     if (window[p.room + "Intro"] != null) {
@@ -2090,6 +2097,11 @@ function canvasReleased() {
                 }
             }
 
+            if (nextAction !== "") {
+                socket.emit("action", nextAction);
+                nextAction = "";
+            }
+
             longText = "";
             longTextLink = "";
             sendToIframe = false;
@@ -2107,6 +2119,10 @@ function canvasReleased() {
 
             //clicked on person
             if (rolledSprite != null) {
+                // if NPC with action associated, execute it
+                if (players[rolledSprite.id].actionId != null) {
+                    socket.emit("action", players[rolledSprite.id].actionId);
+                }
 
                 //click on player sprite attempt to move next to them
                 if (rolledSprite.id != null) {
@@ -2302,8 +2318,11 @@ function executeCommand(c) {
                     sendToIframe = false;
 
                 if (c.actionId != null) {
-                    
-                    socket.emit("action", c.actionId);
+                    if (c.postAction === true) {
+                        nextAction = c.actionId;
+                    } else {
+                        socket.emit("action", c.actionId);
+                    }
                 }
 
             }
