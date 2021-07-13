@@ -157,8 +157,17 @@ or any combination of 4 binary digits, related to:   projector, hall lights, cla
 
 This feature is a Work In Progress. 
 
+## add surveys inside game
+
+Look at clientMod.js to see how to define a survey. It allows normal inputs, checkbox selectors (with and without images) and radio selectors. Surveys html are auto generated inside a section element added in the index.html.
+
+You can define a function to receive the form answers after been executed, declare it in clientMod and reference it in the postAction attribute when defining the survey.
+
+If log feature is activated, the answers will be recorded in the log.
 
 
+
+-----
 
 
 

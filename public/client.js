@@ -172,6 +172,10 @@ var sendToIframe = false;
 
 var nextAction = "";
 
+// to show or hide sections (for pools)
+var showSection = false;
+var activeSection = "";
+
 //To show when banned or disconnected, disables the client on black screen
 var errorMessage = "";
 
@@ -1623,6 +1627,14 @@ function scaleCanvas() {
         frame.style.opacity = 1;
     }
 
+    // scale active section to always match canvas-container
+    if (activeSection !== "") {
+        var section = document.getElementById(activeSection);
+        section.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: 100vh");
+        section.style.pointerEvents = "inherit";
+        section.style.opacity = 1;
+    }
+
     var form = document.getElementById("interface");
     form.setAttribute("style", "width:" + WIDTH * canvasScale + "px;");
 
@@ -2063,6 +2075,14 @@ function canvasReleased() {
             socket.emit("emote", { room: me.room, em: false });
     }
     else if (nickName != "" && screen == "game" && mouseButton == LEFT) {
+        // show section for pools
+        if (showSection === true) {
+            var section = document.getElementById(activeSection);
+
+            section.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: 100vh");
+            section.style.opacity = 1;
+            section.style.pointerEvents = 'inherit';
+        }
         //exit text
         if (longText != "" && longText != SETTINGS.INTRO_TEXT) {
 
@@ -2120,7 +2140,7 @@ function canvasReleased() {
             //clicked on person
             if (rolledSprite != null) {
                 // if NPC with action associated, execute it
-                if (players[rolledSprite.id].actionId != null) {
+                if (players[rolledSprite.id] && players[rolledSprite.id].actionId != null) {
                     socket.emit("action", players[rolledSprite.id].actionId);
                 }
 
@@ -2193,6 +2213,123 @@ function exitFrame() {
     };
 
     frame.setAttribute("src", "");
+}
+
+function sendPoolfromSection() {
+    const section = activeSection.split('section')[0];
+    let form = document.getElementById(activeSection).getElementsByTagName('form')[0];
+    const questions = POOLS[form.id].questions;
+    sendPool(form.id, questions, false);
+}
+
+function sendPool(poolId, questions, onlyValidate) {
+    const form = document.getElementById(poolId);
+
+    function success(input) {
+        input.classList.remove('error');
+        return true;
+    }
+
+    function error(input, message) {
+        input.classList.add('error');
+        input.scrollIntoView()
+        return false;
+    }
+
+    function validateInput(element, divName) {
+        let value = false;
+        let result = element.value;
+        let div = document.getElementById(divName);
+        if (result !== "") {
+            value = true;
+            success(div);
+        } else {
+            error(div, 'Invalid checkbox format');
+        }
+        return [result, value];
+    }
+
+    function validateCheckbox(className, divName) {
+        let value = false;
+        let div = document.getElementById(divName);
+        let result = [];
+
+        document.querySelectorAll('[name=' + className + ']:checked').forEach((el) => {
+            result.push(el.id);
+        })
+
+        if (result.length > 0) {
+            value = true;
+            success(div);
+        } else {
+            error(div, 'Invalid checkbox format');
+        }
+        return [result, value];
+    }
+
+    function validateRadius(name, divName) {
+        let value = false;
+        let result = form.querySelector('[name=' + name + ']:checked');
+        let div = document.getElementById(divName);
+        if (result !== null) {
+            result = result.id;
+            value = true;
+            success(div);
+        } else {
+            error(div, 'Invalid checkbox format');
+        }
+        return [result, value];
+    }
+
+    // add listener to show validation after first click on send button
+    const onChange = function() {
+        sendPool(poolId, questions, true);
+    };
+
+    form.onchange = onChange;
+    
+    let valid = true;
+    let answers = [];
+    
+    for (let i = 0; i < Object.keys(questions).length; i++) {
+        const q = Object.keys(questions)[i];
+        let elementName = poolId + '-question' + (i + 1);
+        let validation = false;
+        let answer;
+        if (questions[q].type === 'input')
+            [answer, validation] = validateInput(form.elements[elementName], poolId + '-question-div-' + (i + 1));
+        else if (questions[q].type === 'checkbox')
+            [answer, validation] = validateCheckbox(elementName, poolId + '-question-div-' + (i + 1));
+        else if (questions[q].type === 'radio')
+            [answer, validation] = validateRadius(elementName, poolId + '-question-div-' + (i + 1));
+        
+        answers.push(answer);
+    
+        if (validation === false) 
+            valid = false;
+    }
+    
+    
+    if (valid && !onlyValidate) {
+        console.log('sending pool');
+        var section = document.getElementById(activeSection);
+        section.style.opacity = 0
+        section.style.pointerEvents = 'none';
+        showSection = false;
+        
+        socket.emit("poolAnswers", [me.id, poolId, answers]);
+
+        if (POOLS[poolId].postAction)
+            window[POOLS[poolId].postAction](answers);
+
+        activeSection = "";
+        // remove validation listener
+        form.onchange = null;
+        // remove all elements in section
+        while (section.firstChild) {
+            section.removeChild(section.lastChild);
+        }
+    }
 }
 
 //queue a command, move to the point
@@ -2312,6 +2449,14 @@ function executeCommand(c) {
                 else
                     longTextLink = c.url;
 
+                if (c.section != null) {
+                    if (c.pool != null) {
+                        populatePool(c.pool, c.section);
+                    }
+                    showSection = true;
+                    activeSection = c.section;
+                }
+
                 if (c.iframe === true)
                     sendToIframe = true;
                 else
@@ -2335,15 +2480,138 @@ function executeCommand(c) {
 
 }
 
+function populateInput(q, div, poolId, questionIndex) {
+    let label = document.createElement('label');
+    label.innerHTML = q.label;
+    div.appendChild(label);
+    let input = document.createElement('input');
+    let inputId = poolId + '-q' +  (questionIndex + 1) + 'answer';
+    input.id = inputId;
+    input.name = poolId + '-question' + (questionIndex + 1)
+    input.innerHTML = q.label;
+    input.type = q.inputType ? q.inputType : 'input';
+    div.appendChild(input);
+    div.appendChild(document.createElement('br'));
+
+    return div;
+}
+
+function populateCheckbox(q, div, poolId, questionIndex) {
+    let flexDiv;
+    if (q.images) {
+        flexDiv = document.createElement('div');
+        flexDiv.classList.add('flex-images');
+    }
+
+    Object.keys(q.options).forEach((opt, i) => {
+        const option = q.options[opt];
+
+        let optionId = poolId + '-q' +  (questionIndex + 1) + 'option' + (i + 1);
+
+        let input = document.createElement('input');
+        input.innerHTML = option.label;
+        input.id = optionId;
+        input.name = poolId + '-question' + (questionIndex + 1)
+        input.type = 'checkbox';
+        input.classList.add(option.class);
+
+        
+
+        let label = document.createElement('label');
+        label.setAttribute('for', optionId);
+
+        if (option.image) {
+            input.classList.add('hidden');
+            label.style.backgroundImage = 'url(' + option.image + ')';
+            flexDiv.appendChild(input);
+            flexDiv.appendChild(label);
+            div.appendChild(flexDiv);
+        }
+        else {
+            div.appendChild(document.createElement('br'));
+            label.innerHTML = option.label;
+            div.appendChild(input);
+            div.appendChild(label);
+        }
+            
+    })
+
+    return div;
+}
+
+function populateRadio(q, div, poolId, questionIndex) {
+    Object.keys(q.options).forEach((opt, i) => {
+        const option = q.options[opt];
+
+        let optionId = poolId + '-q' +  (questionIndex + 1) + 'option' + (i + 1);
+
+        let input = document.createElement('input');
+        input.innerHTML = option.label;
+        input.id = optionId;
+        input.name = poolId + '-question' + (questionIndex + 1)
+        input.type = 'radio';
+        div.appendChild(input);
+        
+        let label = document.createElement('label');
+        label.innerHTML = option.label;
+        label.setAttribute('for', optionId);
+        label.classList.add(option.class);
+        div.appendChild(label);
+        div.appendChild(document.createElement('br'));
+    })
+
+    return div;
+}
+
+function populatePool(poolId, section) {
+    let pool = POOLS[poolId];
+    let container = document.getElementById(section);
+    
+    let form = document.createElement('form');
+    form.id = poolId;
+
+    Object.keys(pool.questions).forEach((q, i) => {
+        let div = document.createElement('div');
+        div.id = poolId + '-question-div-' + (i + 1);
+        div.classList.add('question-div')
+        let title = document.createElement('h4');
+        title.innerHTML = (i + 1) + ".-" + pool.questions[q].text;
+        div.append(title);
+        let input;
+        if (pool.questions[q].type === "input") {
+            div = populateInput(pool.questions[q], div, poolId, i);
+        } else if (pool.questions[q].type === "checkbox") {
+            populateCheckbox(pool.questions[q], div, poolId, i);
+        } else if (pool.questions[q].type === "radio") {
+            populateRadio(pool.questions[q], div, poolId, i);
+        }
+        form.append(div);
+    })
+
+    let button = document.createElement('button')
+
+    button.classList.add('send-pool-button');
+    button.type = 'button';
+    button.onclick = window[pool.actionId];
+    button.innerHTML = 'send';
+
+    form.appendChild(button);
+
+    container.appendChild(form);
+}
+
 //For better user experience I automatically focus on the chat textfield upon pressing a key
 function keyPressed() {
-    if (screen == "game") {
-        var field = document.getElementById("chatField");
-        field.focus();
-    }
-    if (screen == "user") {
-        var field = document.getElementById("lobby-field");
-        field.focus();
+    // disable auto focus when pool section is visible
+    if (activeSection === "") {
+        if (screen == "game") {
+            var field = document.getElementById("chatField");
+            field.focus();
+        }
+        if (screen == "user") {
+            var field = document.getElementById("lobby-field");
+            field.focus();
+        }
     }
 }
 

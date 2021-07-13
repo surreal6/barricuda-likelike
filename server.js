@@ -646,6 +646,17 @@ io.on("connection", function (socket) {
         }
     })
 
+    socket.on("poolAnswers", function (data) {
+        try {
+            tLog.appendToLog(logFileName, socket.id, "poolAnswers", data);
+
+            console.log(socket.id, "poolAnswers", data);
+        } catch (e) {
+            console.log("Error on closeIframe " + socket.id + " listener?");
+            console.error(e);
+        }
+    })
+
 });
 
 
