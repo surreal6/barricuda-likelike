@@ -2896,7 +2896,8 @@ function createThing(thing, id) {
     if (thing.label != null) {
 
         newSprite.onMouseOver = function () {
-            rolledSprite = this;
+            if (this.visible)
+                rolledSprite = this;
         };
 
         newSprite.onMouseOut = function () {
