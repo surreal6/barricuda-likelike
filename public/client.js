@@ -1625,6 +1625,9 @@ function scaleCanvas() {
     if (me && me.activeLink && me.activeLink !== "") {
         frame.style.pointerEvents = "inherit";
         frame.style.opacity = 1;
+        canvas.style.pointerEvents = "none";
+    } else {
+        canvas.style.pointerEvents = "inherit";
     }
 
     // scale active section to always match viewport
@@ -1633,6 +1636,9 @@ function scaleCanvas() {
         section.setAttribute("style", "width:100vw; height: 100vh");
         section.style.pointerEvents = "inherit";
         section.style.opacity = 1;
+        canvas.style.pointerEvents = "none";
+    } else {
+        canvas.style.pointerEvents = "inherit";
     }
 
     var form = document.getElementById("interface");
@@ -2082,6 +2088,9 @@ function canvasReleased() {
             section.setAttribute("style", "width:100vw; height: 100vh");
             section.style.opacity = 1;
             section.style.pointerEvents = 'inherit';
+            canvas.style.pointerEvents = "none";
+        } else {
+            canvas.style.pointerEvents = "inherit";
         }
         //exit text
         if (longText != "" && longText != SETTINGS.INTRO_TEXT) {
@@ -2096,6 +2105,7 @@ function canvasReleased() {
                     // make iframe visible onload
                     frame.onload = function() {
                         if (this.src === "") {
+                            canvas.style.pointerEvents = "inherit";
                             socket.emit("exitIframe", longTextLink);
                         } else {
                             this.style.pointerEvents = "inherit";
@@ -2106,6 +2116,7 @@ function canvasReleased() {
 
                             var talkForm = document.getElementById("talk-form");
                             talkForm.style.display = 'none';
+                            canvas.style.pointerEvents = "none";
                         }
                     };
 
@@ -2450,7 +2461,7 @@ function executeCommand(c) {
                     longTextLink = c.url;
 
                 if (c.section != null) {
-                    if (c.pool != null) {
+                    if (c.pool != null && activeSection === '') {
                         populatePool(c.pool, c.section);
                     }
                     showSection = true;
@@ -2527,7 +2538,8 @@ function populateCheckbox(q, div, poolId, questionIndex) {
             label.style.backgroundImage = 'url(' + option.image + ')';
             if (option.text) {
                 label.innerHTML = option.text;
-                label.style.lineHeight = "240px";
+                // label.style.lineHeight = "178px";
+                label.style.color = "#ff004d";
             }
             flexDiv.appendChild(input);
             flexDiv.appendChild(label);
@@ -2885,7 +2897,8 @@ function createThing(thing, id) {
     if (thing.label != null) {
 
         newSprite.onMouseOver = function () {
-            rolledSprite = this;
+            if (this.visible)
+                rolledSprite = this;
         };
 
         newSprite.onMouseOut = function () {
