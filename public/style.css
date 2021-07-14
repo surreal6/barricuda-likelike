@@ -48,7 +48,7 @@ body {
     background-color: #000;
     opacity: 0;
     pointer-events: none;
-    max-width: 100vh;
+    max-width: 100vw;
     overflow-y: auto;
     text-align: center;
 }
@@ -58,8 +58,28 @@ body {
 }
 
 .question-div {
-    margin-left: 100px;
+    margin-left: 40px;
+    margin-right: 40px;
     text-align: left;
+}
+
+/* form label {
+    margin-left: 5px;
+} */
+
+.question-image-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.question-image {
+    width: 300px;
+    height: auto;
+}
+
+form label {
+    margin-left: 15px;
 }
 
 input[type=checkbox].hidden {
@@ -217,6 +237,10 @@ canvas {
     padding-left: 16px;
 	padding-right: 16px;
     cursor: pointer;
+}
+
+.send-pool-button {
+    margin: 40px;
 }
 
 /*USERNAME CONTINUE*/

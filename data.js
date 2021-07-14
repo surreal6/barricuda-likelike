@@ -72,7 +72,7 @@ module.exports.ROOMS = {
             columna: { file: "/barricuda/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
             mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "http://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
             survey1: { file: "/barricuda/interruptor.png", id: "pool1 switch", frames: 1, frameDelay: 60, visible: true, label: "survey sample 1", position: [119, 66], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool1", section: 'pool-section', obstacle: false } },
-            survey2: { file: "/barricuda/interruptor.png", id: "pool2 switch", frames: 1, frameDelay: 60, visible: true, label: "survey sample 2", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool2", section: 'pool-section', obstacle: false } },
+            survey2: { file: "/barricuda/interruptor.png", id: "pool2 switch", frames: 1, frameDelay: 60, visible: true, label: "survey sample 2", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool3", section: 'pool-section', obstacle: false } },
         }
     },
     classroom: {
