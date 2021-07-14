@@ -2461,7 +2461,7 @@ function executeCommand(c) {
                     longTextLink = c.url;
 
                 if (c.section != null) {
-                    if (c.pool != null) {
+                    if (c.pool != null && activeSection === '') {
                         populatePool(c.pool, c.section);
                     }
                     showSection = true;
