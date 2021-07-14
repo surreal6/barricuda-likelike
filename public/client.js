@@ -2538,7 +2538,8 @@ function populateCheckbox(q, div, poolId, questionIndex) {
             label.style.backgroundImage = 'url(' + option.image + ')';
             if (option.text) {
                 label.innerHTML = option.text;
-                label.style.lineHeight = "240px";
+                // label.style.lineHeight = "178px";
+                label.style.color = "#ff004d";
             }
             flexDiv.appendChild(input);
             flexDiv.appendChild(label);
