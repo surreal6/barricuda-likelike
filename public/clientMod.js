@@ -172,5 +172,124 @@ const POOLS = {
                 
             },
         }
-    }
+    },
+    pool3: {
+        actionId: "sendPoolfromSection",
+        postAction: "afterPool",
+        questions: {
+            question1: {
+                type: 'checkbox',
+                text: 'Select some fruits',
+                images: true,
+                options: [
+                    {
+                        label: 'banana',
+                        image: 'assets/fruits/banana.jpg',
+                    },
+                    {
+                        label: 'blueberries',
+                        image: './assets/fruits/blueberry.jpg',
+                    },
+                    {
+                        label: 'watermelon',
+                        image: './assets/fruits/watermelon.jpg',
+                    },
+                ]
+            },
+            question2: {
+                type: 'radio',
+                text: '¿sabes emplear comandos de búsquedas para obtener resultados más acertados?',
+                image: 'assets/fruits/banana.jpg',
+                options: [
+                    {
+                        label: 'Conozco todos esos comandos y muchos más',
+                    },
+                    {
+                        label: 'Conozco algunos, otros no',
+                    },
+                    {
+                        label: 'No conocía ninguno',
+                    },
+                ]
+            },
+            question3: {
+                type: 'radio',
+                text: 'Hace unos meses viste un video que te encantó en twitter y quieres enseñárselo a un amigo/a ¿cómo lo buscas?',
+                options: [
+                    {
+                        label: 'Lo tengo en una carpeta de videos en mis marcadores'
+                    },
+                    {
+                        label: 'buscando en twitter por el tema del video para volverlo a encontrar'
+                    },
+                    {
+                        label: 'ufff, no creo que lo vuelva a encontrar, pero se lo cuento'
+                    },
+                    {
+                        label: 'Con las opciones de búsqueda avanzada en el buscador'
+                    },
+                ]
+            },
+            question4: {
+                type: 'checkbox',
+                text: 'Selecciona todas las imágenes que son falsas',
+                images: true,
+                options: [
+                    {
+                        text: "banana",
+                        label: 'banana',
+                        image: 'assets/fruits/banana.jpg',
+                    },
+                    {
+                        text: "blueberries",
+                        label: 'blueberries',
+                        image: './assets/fruits/blueberry.jpg',
+                    },
+                    {
+                        text: "watermelon",
+                        label: 'watermelon',
+                        image: './assets/fruits/watermelon.jpg',
+                    },
+                ]
+            },
+            question5: {
+                type: 'radio',
+                text: 'Tus contraseñas…',
+                options: [
+                    {
+                        label: 'Son algo como 1234'
+                    },
+                    {
+                        label: 'Son algo como VTYf3bsu36@mp_34'
+                    },
+                    {
+                        label: 'fechas, lugares o algo que tiene que ver con mi vida'
+                    },
+                    {
+                        label: 'Uso la misma contraseña en todo, así no se me olvida'
+                    },
+                    {
+                        label: 'No me preocupo por recordar contraseñas, tengo un gestor de contraseñas que lo hace por mi.'
+                    },
+                ]
+            },
+            question6: {
+                type: 'radio',
+                text: '¿Qué significa esta imagen? ',
+                image: 'assets/fruits/watermelon.jpg',
+                options: [
+                    {
+                        label: 'Es una licencia que dice que puedo usarlo siempre que diga de quién es',
+                    },
+                    {
+                        label: 'Ni idea',
+                    },
+                    {
+                        label: 'Es una licencia que dice que puedo usarlo sin modificarlo',
+                    },
+                ]
+                
+            },
+        }
+    },
 }

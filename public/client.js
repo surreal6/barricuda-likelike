@@ -1627,10 +1627,10 @@ function scaleCanvas() {
         frame.style.opacity = 1;
     }
 
-    // scale active section to always match canvas-container
+    // scale active section to always match viewport
     if (activeSection !== "") {
         var section = document.getElementById(activeSection);
-        section.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: 100vh");
+        section.setAttribute("style", "width:100vw; height: 100vh");
         section.style.pointerEvents = "inherit";
         section.style.opacity = 1;
     }
@@ -2078,8 +2078,8 @@ function canvasReleased() {
         // show section for pools
         if (showSection === true) {
             var section = document.getElementById(activeSection);
-
-            section.setAttribute("style", "width:" + WIDTH * canvasScale + "px; height: 100vh");
+            // scale active section to match viewport
+            section.setAttribute("style", "width:100vw; height: 100vh");
             section.style.opacity = 1;
             section.style.pointerEvents = 'inherit';
         }
@@ -2500,7 +2500,7 @@ function populateCheckbox(q, div, poolId, questionIndex) {
     let flexDiv;
     if (q.images) {
         flexDiv = document.createElement('div');
-        flexDiv.classList.add('flex-images');
+        flexDiv.classList.add('question-image-div');
     }
 
     Object.keys(q.options).forEach((opt, i) => {
@@ -2513,7 +2513,8 @@ function populateCheckbox(q, div, poolId, questionIndex) {
         input.id = optionId;
         input.name = poolId + '-question' + (questionIndex + 1)
         input.type = 'checkbox';
-        input.classList.add(option.class);
+        if (option.class)
+            input.classList.add(option.class);
 
         
 
@@ -2522,7 +2523,12 @@ function populateCheckbox(q, div, poolId, questionIndex) {
 
         if (option.image) {
             input.classList.add('hidden');
+            input.classList.add('image-checkbox');
             label.style.backgroundImage = 'url(' + option.image + ')';
+            if (option.text) {
+                label.innerHTML = option.text;
+                label.style.lineHeight = "240px";
+            }
             flexDiv.appendChild(input);
             flexDiv.appendChild(label);
             div.appendChild(flexDiv);
@@ -2574,9 +2580,22 @@ function populatePool(poolId, section) {
         let div = document.createElement('div');
         div.id = poolId + '-question-div-' + (i + 1);
         div.classList.add('question-div')
-        let title = document.createElement('h4');
+        let title = document.createElement('h2');
         title.innerHTML = (i + 1) + ".-" + pool.questions[q].text;
         div.append(title);
+
+        let image;
+        if (pool.questions[q].image) {
+            imageDiv = document.createElement('div');
+            imageDiv.classList.add('question-image-div');
+            image = document.createElement('img');
+            image.src = pool.questions[q].image;
+            image.classList.add('question-image');
+            imageDiv.append(image);
+            div.append(imageDiv);
+            div.append(document.createElement('br'));
+        }
+
         let input;
         if (pool.questions[q].type === "input") {
             div = populateInput(pool.questions[q], div, poolId, i);
@@ -2593,7 +2612,7 @@ function populatePool(poolId, section) {
     button.classList.add('send-pool-button');
     button.type = 'button';
     button.onclick = window[pool.actionId];
-    button.innerHTML = 'send';
+    button.innerHTML = 'enviar';
 
     form.appendChild(button);
 
@@ -3013,7 +3032,10 @@ function outOfCanvas() {
 
 //disable scroll on phone
 function preventBehavior(e) {
-    e.preventDefault();
+    // allow scroll if active section is in use
+    if (showSection === false) {
+        e.preventDefault();
+    }
 };
 
 document.addEventListener("touchmove", preventBehavior, { passive: false });
