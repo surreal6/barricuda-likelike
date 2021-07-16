@@ -1196,6 +1196,12 @@ function newGame() {
         }
     });
 
+    socket.on("executeCommand", function (msg) {
+        if (socket.id) {
+            executeCommand(msg);
+        }
+    });
+
     //I can now open it
 
     socket.open();
