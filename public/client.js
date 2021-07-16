@@ -774,10 +774,10 @@ function newGame() {
                             // class (classroom) lights are off and cave (cave) light is on.
                             if (ROOMS[p.room].animations != null) {
                                 Object.keys(ROOMS[p.room].animations).forEach((animName) => {
-                                    let factor = ROOMS[p.room].animations[animName][1] - f;
-                                    let duration = ROOMS[p.room].animations[animName][1] - ROOMS[p.room].animations[animName][0];
-                                    let crop = bgg.get(0, 100 * factor, 128, 100 * duration);
-
+                                    let startFrame = ROOMS[p.room].animations[animName][0];
+                                    let duration = ROOMS[p.room].animations[animName][1];
+                                    let endFrame = startFrame + duration;
+                                    let crop = bgg.get(0, 100 * startFrame, 128, 100 * endFrame);
                                     let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
                                     let anim = loadAnimation(spritesheet);
                                     anim.frameDelay = ROOMS[p.room].frameDelay;
@@ -1193,6 +1193,12 @@ function newGame() {
                 }
             })
             
+        }
+    });
+
+    socket.on("executeCommand", function (msg) {
+        if (socket.id) {
+            executeCommand(msg);
         }
     });
 
