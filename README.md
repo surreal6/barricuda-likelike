@@ -16,6 +16,10 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
 # New features:
 
+## Join and Leave functions for any room
+
+You can declare anyRoomJoin and anyRoomLeave functions in your serverMod file and they will be executed when entering and leaving any room, so you don't need to copypaste lots of code anymore.
+
 ## Define actions on NPC clicks
 
 You can define actions to be triggered when clicking NPCs. In this example, clicking the 'divulgadorNpc will execute onDivulgador function, if it exist in your serverMod file.
