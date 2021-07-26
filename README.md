@@ -51,6 +51,14 @@ In client.js you will find these selectors. Just set them to true.
     var QUICK_LOGIN = false;
     var DEBUG_CLICKS = false;
     var DEBUG_SPRITES = false;
+    var DEBUG_CONSOLE = false;
+
+DEBUG_CONSOLE will mute the console output (it's better for performance)
+
+You can also mute server console by adding a .env variable
+
+    VERBOSE = false
+    
 ## Traffic log
 
 Add this to .env file:
