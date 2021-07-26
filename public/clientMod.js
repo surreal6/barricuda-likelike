@@ -20,7 +20,7 @@ function initMod(playerId, roomId) {
     // if (!socket.hasListeners('event')) {
     //     socket.on("event", function (msg) {
     //         if (socket.id) {
-    //             console.log('event happend');
+    //             console.silentLog('event happend');
     //         }
     //     });
     // }
@@ -38,7 +38,7 @@ function cuevaPerspective(sprite) {
 }
 
 function afterPool(data) {
-    console.log("Answers ", data);
+    console.silentLog("Answers ", data);
 }
 
 const POOLS = {

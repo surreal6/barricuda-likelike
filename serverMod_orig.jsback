@@ -8,7 +8,7 @@ The functions are called by the engine at crucial points, only if they exist.
 
 //called at the beginning
 module.exports.initMod = function (io, gameState, DATA) {
-    console.log("MOD: Initialized");
+    console.silentLog("MOD: Initialized");
 
     //EVERYTHING GLOBALLLLL
     global.rita = require('rita');
@@ -138,17 +138,17 @@ module.exports.initMod = function (io, gameState, DATA) {
 //custom function called on the server side when a player successfully enters or exits the room
 //executed before it's broadcast to the other players
 module.exports.experimentsJoin = function (player, roomId) {
-    //console.log("MOD: " + player.nickName + " entered room " + roomId);
+    //console.silentLog("MOD: " + player.nickName + " entered room " + roomId);
 }
 
 module.exports.experimentsLeave = function (player, roomId) {
-    //console.log("MOD: " + player.nickName + " exited room " + roomId);
+    //console.silentLog("MOD: " + player.nickName + " exited room " + roomId);
 }
 
 //wouldn't it be funny if cetain rooms modified your messages?
 module.exports.experimentsTalkFilter = function (player, message) {
 
-    //console.log("MOD: " + player.nickName + " said " + message);
+    //console.silentLog("MOD: " + player.nickName + " said " + message);
     //message = message.replace(/[aeiou]/ig, '');
     //make sure it returns a message
     return message;
@@ -158,7 +158,7 @@ module.exports.experimentsTalkFilter = function (player, message) {
 //wouldn't it be funny if cetain rooms modified your messages?
 module.exports.VIPRoomTalkFilter = function (player, message) {
 
-    //console.log("MOD: " + player.nickName + " said " + message);
+    //console.silentLog("MOD: " + player.nickName + " said " + message);
     message = global.rita.getPhonemes(message);
     message = message.replace(/-/g, "");
     //make sure it returns a message
@@ -168,7 +168,7 @@ module.exports.VIPRoomTalkFilter = function (player, message) {
 //wouldn't it be funny if cetain rooms modified your messages?
 module.exports.cnsnntrmTalkFilter = function (player, message) {
 
-    //console.log("MOD: " + player.nickName + " said " + message);
+    //console.silentLog("MOD: " + player.nickName + " said " + message);
 
     if (global.consonant == 0) //a
         message = message.replace(/[eiou]/ig, 'a');
@@ -313,12 +313,12 @@ module.exports.rhymeRoomTalkFilter = function (player, message) {
                 }
             }
 
-            //console.log("YEAH " + player.nickName + " " + lastWord + "! Words uttered " + global.rhymingPlayers[player.nickName]);
+            //console.silentLog("YEAH " + player.nickName + " " + lastWord + "! Words uttered " + global.rhymingPlayers[player.nickName]);
 
             clearTimeout(global.rhymeTime);
 
             global.rhymeTime = setTimeout(function () {
-                //console.log("Rhyme timeout");
+                //console.silentLog("Rhyme timeout");
 
                 //send to everybody in the room
                 io.to("rhymeRoom").emit('musicOff');
@@ -410,12 +410,12 @@ module.exports.familyRoomJoin = function (playerObject, roomId) {
         if (global.familyRoles[roleId] == "" && !foundRole) {
             foundRole = true;
             global.familyRoles[roleId] = playerObject.id;
-            console.log(playerObject.id + " becomes " + roleId);
+            console.silentLog(playerObject.id + " becomes " + roleId);
         }
     }
 
     if (!foundRole)
-        console.log(playerObject.id + " becomes a fly");
+        console.silentLog(playerObject.id + " becomes a fly");
 
     //assign a new role and send all the roles to the room
 
@@ -434,7 +434,7 @@ module.exports.familyRoomLeave = function (playerObject, roomId) {
         if (global.familyRoles[roleId] == playerObject.id) {
 
             global.familyRoles[roleId] = "";
-            console.log(roleId + " is now free");
+            console.silentLog(roleId + " is now free");
         }
     }
     //I don't need to send updated roles
@@ -461,7 +461,7 @@ module.exports.familyRoomTalkFilter = function (player, message) {
 }
 
 module.exports.VIPRoomJoin = function (playerObject, roomId) {
-    //console.log(playerObject.nickName + " enters the VIP room");
+    //console.silentLog(playerObject.nickName + " enters the VIP room");
     //...
     global.VIPList.push(playerObject.id);
     if (global.VIPList.length > 3) {
@@ -483,7 +483,7 @@ module.exports.VIPRoomIntro = function (newComerId, introObj) {
     //so the intros arrive too late creating ghosts.
     //since the server has the real list I can override the intro after the fact and expel the ghost. Ugly but necessary.
 
-    //console.log("Obsolete intro? " + gameState.players[introObj.id].room);
+    //console.silentLog("Obsolete intro? " + gameState.players[introObj.id].room);
 
     if (gameState.players[introObj.id].room != "VIPRoom")
         io.to("VIPRoom").emit("playerLeft", { id: introObj.id, room: "VIPRoom", disconnect: false });
@@ -492,7 +492,7 @@ module.exports.VIPRoomIntro = function (newComerId, introObj) {
 
 //force change room
 module.exports.transferPlayer = function (playerId, from, to, x, y) {
-    //console.log(playerId + " is transfered to " + to);
+    //console.silentLog(playerId + " is transfered to " + to);
 
     var s = io.sockets.sockets[playerId];
     var p = gameState.players[playerId];
@@ -545,7 +545,7 @@ module.exports.transferPlayer = function (playerId, from, to, x, y) {
 
 //if a player leaves the room on their own accord make sure they are removed from the list as well
 module.exports.VIPRoomLeave = function (playerObject, roomId) {
-    //console.log(playerObject.nickName + " exits the VIP room");
+    //console.silentLog(playerObject.nickName + " exits the VIP room");
 
     var index = global.VIPList.indexOf(playerObject.id);
     if (index !== -1) {
@@ -561,7 +561,7 @@ module.exports.VIPRoomLeave = function (playerObject, roomId) {
 //I don't want a hacked client to be able to call whatever function exists on the server mod hence the naming
 //and I want send only an id without arguments to force all my logic here on the server side
 module.exports.onTVInteract = function (pId) {
-    //console.log("Action onTVInteract called by " + pId);
+    //console.silentLog("Action onTVInteract called by " + pId);
 
     //a persistent change to the game state: change the DATA sent to the new players
     //*persistent until server restarts

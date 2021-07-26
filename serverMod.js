@@ -8,7 +8,7 @@ The functions are called by the engine at crucial points, only if they exist.
 
 //called at the beginning
 module.exports.initMod = function (io, gameState, DATA) {
-    console.log("MOD: Initialized");
+    console.silentLog("MOD: Initialized");
 
     //EVERYTHING GLOBALLLLL
     global.gameState = gameState;
@@ -129,7 +129,7 @@ module.exports.initMod = function (io, gameState, DATA) {
 
 // the cave uses the VIPRoom rules in original likelike
 module.exports.caveJoin = function (playerObject, roomId) {
-    // console.log(playerObject.nickName + " enters the VIP room");
+    // console.silentLog(playerObject.nickName + " enters the VIP room");
     //...
     this.setLightState();
 
@@ -164,7 +164,7 @@ module.exports.caveIntro = function (newComerId, introObj) {
     //so the intros arrive too late creating ghosts.
     //since the server has the real list I can override the intro after the fact and expel the ghost. Ugly but necessary.
 
-    // console.log("Obsolete intro? " + gameState.players[introObj.id].room);
+    // console.silentLog("Obsolete intro? " + gameState.players[introObj.id].room);
 
     this.setLightState();
 
@@ -175,7 +175,7 @@ module.exports.caveIntro = function (newComerId, introObj) {
 
 //force change room
 module.exports.transferPlayer = function (playerId, from, to, x, y) {
-    console.log(playerId + " is transfered to " + to);
+    console.silentLog(playerId + " is transfered to " + to);
 
     var s = io.sockets.sockets[playerId];
     var p = gameState.players[playerId];
@@ -228,7 +228,7 @@ module.exports.transferPlayer = function (playerId, from, to, x, y) {
 
 //if a player leaves the room on their own accord make sure they are removed from the list as well
 module.exports.caveLeave = function (playerObject, roomId) {
-    //console.log(playerObject.nickName + " exits the VIP room");
+    //console.silentLog(playerObject.nickName + " exits the VIP room");
 
     var index = global.VIPList.indexOf(playerObject.id);
     if (index !== -1) {
@@ -243,13 +243,13 @@ module.exports.caveLeave = function (playerObject, roomId) {
 
 
 module.exports.hallJoin = function(player, roomId) {
-    // console.log("MOD: " + player.nickName + " entered room " + roomId);
+    // console.silentLog("MOD: " + player.nickName + " entered room " + roomId);
     this.setLightState();
 }
 
 
 module.exports.classroomJoin = function(player, roomId) {
-    // console.log("MOD: " + player.nickName + " entered room " + roomId);
+    // console.silentLog("MOD: " + player.nickName + " entered room " + roomId);
     this.setLightState();
 }
 
@@ -257,19 +257,19 @@ module.exports.classroomJoin = function(player, roomId) {
 // LIGHTS
 
 module.exports.onHallLight = function (pId) {
-    // console.log('switch hall');
+    // console.silentLog('switch hall');
     global.lightState[1] = global.lightState[1] ? 0 : 1 
     this.setLightState();
 }
 
 module.exports.onClassroomLight = function (pId) {
-    // console.log('switch classroom');
+    // console.silentLog('switch classroom');
     global.lightState[2] = global.lightState[2] ? 0 : 1 
     this.setLightState();
 }
 
 module.exports.onCaveLight = function (pId) {
-    // console.log('switch cave');
+    // console.silentLog('switch cave');
     global.lightState[3] = global.lightState[3] ? 0 : 1 
     this.setLightState();
 }
