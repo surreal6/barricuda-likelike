@@ -3054,6 +3054,7 @@ function showIframe() {
 
     if (e != null) {
         e.style.display = "block";
+        e.style.pointerEvents = "all";
         hideChat();
         showIframeButton();
         let c = document.getElementById('canvas-container');
@@ -3065,6 +3066,7 @@ function hideIframe() {
     let e = document.getElementById("iframe");
     if (e != null) {
         e.style.display = "none";
+        e.style.pointerEvents = "none";
         e.style.backgroundImage = 'url("assets/clock2.gif")';
         hideIframeButton();
         let c = document.getElementById('canvas-container');
