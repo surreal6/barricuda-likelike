@@ -775,7 +775,10 @@ function newGame() {
                         // with this approach background becomes the firsr sprite in allSprites
                         if (ROOMS[p.room].animations != null) {
 
-                            let bgAnim = createSprite(0, 0, 128, 100);
+                            let resolutionX = ROOMS[p.room].bgResolution ? ROOMS[p.room].bgResolution[0] : 128;
+                            let resolutionY = ROOMS[p.room].bgResolution ? ROOMS[p.room].bgResolution[1] : 100;
+
+                            let bgAnim = createSprite(0, 0, resolutionX, resolutionY);
                             bgAnim.background = true;
                         
                             // this example manages a 128x6400 spritesheet (64 frames of 128x100)
@@ -790,8 +793,9 @@ function newGame() {
                                     let startFrame = ROOMS[p.room].animations[animName][0];
                                     let duration = ROOMS[p.room].animations[animName][1];
                                     let endFrame = startFrame + duration;
-                                    let crop = bgg.get(0, 100 * startFrame, 128, 100 * endFrame);
-                                    let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
+                                    let crop = bgg.get(0, resolutionY * startFrame, resolutionX, resolutionY * endFrame);
+                                    let spritesheet = loadSpriteSheet(crop, resolutionX, resolutionY, duration);
+                                    // let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
                                     let anim = loadAnimation(spritesheet);
                                     anim.frameDelay = ROOMS[p.room].frameDelay;
                                     bgAnim.addAnimation(animName, anim);
@@ -801,17 +805,20 @@ function newGame() {
                             // set current lightState
                             //  TODO
                         
-                            bgAnim.depthOffset = -100;
-                            bgAnim.scale = 2;
-                            bgAnim.position.x = 128;
-                            bgAnim.position.y = 100;
-                        }
+                            bgAnim.depthOffset = -resolutionY;
+                            if (ROOMS[p.room].bgScale != null)
+                                bgAnim.scale = ROOMS[p.room].bgScale;
+                            else
+                                bgAnim.scale = 2;
+                            bgAnim.position.x = resolutionX / 2;
+                            bgAnim.position.y = resolutionY / 2;
+                        } else {
+                            var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
+                            bg = loadAnimation(ss);
 
-                        var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
-                        bg = loadAnimation(ss);
-
-                        if (ROOMS[p.room].frameDelay != null) {
-                            bg.frameDelay = ROOMS[p.room].frameDelay;
+                            if (ROOMS[p.room].frameDelay != null) {
+                                bg.frameDelay = ROOMS[p.room].frameDelay;
+                            }
                         }
                     }
 
