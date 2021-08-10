@@ -3080,7 +3080,7 @@ function hideIframe() {
             showChat();
         }
         
-        c.setAttribute("src", "");
+        e.setAttribute("src", "");
     }
 }
 
