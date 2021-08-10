@@ -810,8 +810,8 @@ function newGame() {
                                 bgAnim.scale = ROOMS[p.room].bgScale;
                             else
                                 bgAnim.scale = 2;
-                            bgAnim.position.x = resolutionX / 2;
-                            bgAnim.position.y = resolutionY / 2;
+                            bgAnim.position.x = NATIVE_WIDTH;
+                            bgAnim.position.y = NATIVE_HEIGHT;
                         } else {
                             var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
                             bg = loadAnimation(ss);
