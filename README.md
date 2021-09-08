@@ -123,15 +123,17 @@ Add this to .env file to activate this feature:
 
 TIMEZONE is optional, "GMT" is the default. Look [here](https://raw.githubusercontent.com/node-cron/tz-offset/master/generated/offsets.json) for available timezones. This is important to sync cron tasks with your server locale time.
 
-A few cron tasks will be created:
+Three cron tasks will be created:
 
 * A daily task at 00:00AM to rename log file to match current date
 
-* A daily task at 04:00AM to compile previous day logs into one single file
+* An every monday task at 04:00AM to compile previous week into a single file and send it by email.
 
-* A weekly task every monday at 6:00AM to compile previous week daily logs into a single file
+      You can run this event at any time by using the '/collectWeek' admin command.
 
-* A weekly task every monday at 6:30AM to send the previous week log to defined emails.
+* A monthly task to compile all existing weekly logs into a single file, send it by email and copy it to public directory
+ 
+      You can run this event at any time by using the '/collectGlobal' admin command
 
 ## Open links in an iframe in the current page
 
