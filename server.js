@@ -58,8 +58,6 @@ let logFileName = '';
 const tLog = require('./src/traffic-log-management');
 const mailer = require('./src/mailer');
 const cron = require('node-cron');
-// const { log } = require("util");
-const { setupCronTasks } = require("./src/cron");
 
 //time before disconnecting (forgot the tab open?)
 var ACTIVITY_TIMEOUT = 10 * 60 * 1000;
@@ -111,8 +109,29 @@ app.use(express.static("public"));
 if (process.env.TRAFFICLOG != null) {
     allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
 
+    tLog.cleanUpLogs();
+
     if (process.env.SENDLOG != null && process.env.TRAFFICLOG.toLowerCase() === 'true') {
-        setupCronTasks();
+        let timezone = "GMT";
+        if (process.env.TIMEZONE != null) {
+            timezone = process.env.TIMEZONE;
+        }
+
+        // every day at 00:00
+        cron.schedule('0 0 0 * * *', () => {
+            logFileName = tLog.changeLogFileName(Date.now());
+            mailer.sendMail('cron 00:00', 'change log filename ' + logFileName);
+        }, { timezone: timezone });
+            
+        // every monday at 06:00  send a week report
+        cron.schedule('0 6 * * 1', () => {
+            tLog.collectWeekLogs('../logs');
+        }, { timezone: timezone });
+
+        // every month send a global report
+        cron.schedule('0 0 1 * *', () => {
+            tLog.collectGlobalLogs('../logs/weeks');
+        }, { timezone: timezone });
     }
     
     logFileName = tLog.serverStart(START_TIME);
@@ -823,13 +842,17 @@ function adminCommand(adminSocket, str) {
                 break;
             
             //trafic management
-            case "pastlogs":
+            case "cleanLogs":
                 cmd.shift();
-                tLog.generateUnstoredDailyLogs();
+                tLog.cleanUpLogs();
                 break;
-            case "pastDailylogs":
+            case "collectWeek":
                 cmd.shift();
-                tLog.generateUnstoredLogs();
+                tLog.collectWeekLogs('../logs');
+                break;
+            case "collectGlobal":
+                cmd.shift();
+                tLog.collectGlobalLogs('../logs/weeks');
                 break;
         }
     }
