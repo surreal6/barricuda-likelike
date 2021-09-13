@@ -42,138 +42,138 @@ function afterPool(data) {
 }
 
 const POOLS = {
-    pool1: {
-        actionId: "sendPoolfromSection",
-        postAction: "afterPool",
-        questions: {
-            question1: {
-                type: 'input',
-                text: 'question1',
-                label: 'label question1'
-            },
-            question2: {
-                type: 'checkbox',
-                text: 'select some of this',
-                options: [
-                    {
-                        text: "option1",
-                        label: 'label option1',
-                        class: 'aaa'
-                    },
-                    {
-                        text: "option2",
-                        label: 'label option2',
-                        class: 'bbb'
-                    },
-                    {
-                        text: "option3",
-                        label: 'label option3',
-                        class: 'ccc'
-                    },
-                ]
+    // pool1: {
+    //     actionId: "sendPoolfromSection",
+    //     postAction: "afterPool",
+    //     questions: {
+    //         question1: {
+    //             type: 'input',
+    //             text: 'question1',
+    //             label: 'label question1'
+    //         },
+    //         question2: {
+    //             type: 'checkbox',
+    //             text: 'select some of this',
+    //             options: [
+    //                 {
+    //                     text: "option1",
+    //                     label: 'label option1',
+    //                     class: 'aaa'
+    //                 },
+    //                 {
+    //                     text: "option2",
+    //                     label: 'label option2',
+    //                     class: 'bbb'
+    //                 },
+    //                 {
+    //                     text: "option3",
+    //                     label: 'label option3',
+    //                     class: 'ccc'
+    //                 },
+    //             ]
                 
-            },
-            question3: {
-                type: 'radio',
-                text: 'select one of this',
-                options: [
-                    {
-                        text: "option1",
-                        label: 'label option1'
-                    },
-                    {
-                        text: "option2",
-                        label: 'label option2'
-                    },
-                    {
-                        text: "option3",
-                        label: 'label option3'
-                    },
-                ]
+    //         },
+    //         question3: {
+    //             type: 'radio',
+    //             text: 'select one of this',
+    //             options: [
+    //                 {
+    //                     text: "option1",
+    //                     label: 'label option1'
+    //                 },
+    //                 {
+    //                     text: "option2",
+    //                     label: 'label option2'
+    //                 },
+    //                 {
+    //                     text: "option3",
+    //                     label: 'label option3'
+    //                 },
+    //             ]
                 
-            },
-        }
-    },
-    pool2: {
-        actionId: "sendPoolfromSection",
-        postAction: "afterPool",
-        questions: {
-            question1: {
-                type: 'input',
-                inputType: 'password',
-                text: 'text question1',
-                label: 'label question1'
-            },
-            question2: {
-                type: 'radio',
-                text: 'select one of this options',
-                options: [
-                    {
-                        text: "option 1",
-                        label: 'label option1',
-                        class: 'aaa'
-                    },
-                    {
-                        text: "option 2",
-                        label: 'label option2',
-                        class: 'bbb'
-                    },
-                    {
-                        text: "option 3",
-                        label: 'label option3',
-                        class: 'ccc'
-                    },
-                ]
+    //         },
+    //     }
+    // },
+    // pool2: {
+    //     actionId: "sendPoolfromSection",
+    //     postAction: "afterPool",
+    //     questions: {
+    //         question1: {
+    //             type: 'input',
+    //             inputType: 'password',
+    //             text: 'text question1',
+    //             label: 'label question1'
+    //         },
+    //         question2: {
+    //             type: 'radio',
+    //             text: 'select one of this options',
+    //             options: [
+    //                 {
+    //                     text: "option 1",
+    //                     label: 'label option1',
+    //                     class: 'aaa'
+    //                 },
+    //                 {
+    //                     text: "option 2",
+    //                     label: 'label option2',
+    //                     class: 'bbb'
+    //                 },
+    //                 {
+    //                     text: "option 3",
+    //                     label: 'label option3',
+    //                     class: 'ccc'
+    //                 },
+    //             ]
                 
-            },
-            question3: {
-                type: 'checkbox',
-                text: 'select some of this options',
-                options: [
-                    {
-                        text: "option 1",
-                        label: 'label option1'
-                    },
-                    {
-                        text: "option 2",
-                        label: 'label option2'
-                    },
-                    {
-                        text: "option 3",
-                        label: 'label option3'
-                    },
-                ]
+    //         },
+    //         question3: {
+    //             type: 'checkbox',
+    //             text: 'select some of this options',
+    //             options: [
+    //                 {
+    //                     text: "option 1",
+    //                     label: 'label option1'
+    //                 },
+    //                 {
+    //                     text: "option 2",
+    //                     label: 'label option2'
+    //                 },
+    //                 {
+    //                     text: "option 3",
+    //                     label: 'label option3'
+    //                 },
+    //             ]
                 
-            },
-            question4: {
-                type: 'checkbox',
-                text: 'which fruit do you prefer?',
-                images: true,
-                options: [
-                    {
-                        text: "banana",
-                        label: 'banana',
-                        class: 'image-checkbox',
-                        image: 'assets/fruits/banana.jpg',
-                    },
-                    {
-                        text: "blueberries",
-                        label: 'blueberries',
-                        class: 'image-checkbox',
-                        image: './assets/fruits/blueberry.jpg',
-                    },
-                    {
-                        text: "watermelon",
-                        label: 'watermelon',
-                        class: 'image-checkbox',
-                        image: './assets/fruits/watermelon.jpg',
-                    },
-                ]
+    //         },
+    //         question4: {
+    //             type: 'checkbox',
+    //             text: 'which fruit do you prefer?',
+    //             images: true,
+    //             options: [
+    //                 {
+    //                     text: "banana",
+    //                     label: 'banana',
+    //                     class: 'image-checkbox',
+    //                     image: 'assets/fruits/banana.jpg',
+    //                 },
+    //                 {
+    //                     text: "blueberries",
+    //                     label: 'blueberries',
+    //                     class: 'image-checkbox',
+    //                     image: './assets/fruits/blueberry.jpg',
+    //                 },
+    //                 {
+    //                     text: "watermelon",
+    //                     label: 'watermelon',
+    //                     class: 'image-checkbox',
+    //                     image: './assets/fruits/watermelon.jpg',
+    //                 },
+    //             ]
                 
-            },
-        }
-    },
-    pool3: {
+    //         },
+    //     }
+    // },
+    pool: {
         actionId: "sendPoolfromSection",
         postAction: "afterPool",
         questions: {
@@ -251,44 +251,6 @@ const POOLS = {
                         image: './assets/fruits/watermelon.jpg',
                     },
                 ]
-            },
-            question5: {
-                type: 'radio',
-                text: 'Tus contraseñas…',
-                options: [
-                    {
-                        label: 'Son algo como 1234'
-                    },
-                    {
-                        label: 'Son algo como VTYf3bsu36@mp_34'
-                    },
-                    {
-                        label: 'fechas, lugares o algo que tiene que ver con mi vida'
-                    },
-                    {
-                        label: 'Uso la misma contraseña en todo, así no se me olvida'
-                    },
-                    {
-                        label: 'No me preocupo por recordar contraseñas, tengo un gestor de contraseñas que lo hace por mi.'
-                    },
-                ]
-            },
-            question6: {
-                type: 'radio',
-                text: '¿Qué significa esta imagen? ',
-                image: 'assets/fruits/watermelon.jpg',
-                options: [
-                    {
-                        label: 'Es una licencia que dice que puedo usarlo siempre que diga de quién es',
-                    },
-                    {
-                        label: 'Ni idea',
-                    },
-                    {
-                        label: 'Es una licencia que dice que puedo usarlo sin modificarlo',
-                    },
-                ]
-                
             },
         }
     },
