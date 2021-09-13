@@ -72,7 +72,7 @@ module.exports = {
 
         for (let index = 0; index < files.length; index++) {
             let filename = files[index];
-            console.silentLog('incluido ' + filename);
+            console.silentLog('included and archived ' + filename);
             let filePath = path.join(logDir, filename);
             fs.readFile(filePath, function(err, buf) {
                 fs.appendFile(rangeLogFilename, buf.toString(), function() {
@@ -85,10 +85,10 @@ module.exports = {
 
         return rangeLogFilename;
     },
-    sendFileByMail: function (fileUrl) {
+    sendFileByMail: function (fileUrl, msg) {
         let fileName = fileUrl.split('/')[fileUrl.split('/').length - 1];
         console.silentLog('sending file ' + fileName);
-        let subject = "📊📋 Log likelike Test ✔ 🕰️📬 " + fileName;
+        let subject = "📊📋 " + msg + " 🕰️📬 " + fileName;
         let content = "Automatic traffic report. Do not reply.";
         mailer.sendMail(subject, content, fileName, fileUrl, function() {
             console.silentLog('sending weekly ' + fileName + ' to email');
@@ -169,9 +169,22 @@ module.exports = {
         this.getUnstoredDailyLogsFromPath(archiveDir, function(files) {
             let filename = generateLog(files, archiveDir,  path.join(__dirname, '../logs/weeks'), path.join(__dirname, '../logs/archive'));
             setTimeout(function() {
-                sendFileByMail(filename);
+                sendFileByMail(filename, "week Log");
             }, 5000);
         });
+    },
+    sendLastWeekLog: function() {
+        let archiveDir = path.join(__dirname, "../logs/weeks");
+        let generateLog = this.generateLog;
+        let sendFileByMail = this.sendFileByMail;
+
+        //get last file
+        this.getFilesFromPath(archiveDir, function(files) {
+            let archiveDir = path.join(__dirname, "../logs/weeks");
+            let fileUrl = path.join(archiveDir, files.sort().reverse()[0]);
+            // console.log(fileUrl)
+            sendFileByMail(fileUrl, "last week report");
+        })
     },
     collectGlobalLogs: function(folder) {
         let archiveDir = path.join(__dirname, folder);
@@ -181,7 +194,7 @@ module.exports = {
             console.log(files);
             let filename = generateLog(files, archiveDir,  path.join(__dirname, '../logs/global'), path.join(__dirname, '../logs/weeks'));
             setTimeout(function() {
-                sendFileByMail(filename);
+                sendFileByMail(filename, "global Log");
                 // copy latest global report to public folder
                 fs.copyFile(filename, path.join(archiveDir, '../../public/logs/global.txt'), function() {
                     console.silentLog('moving global');
