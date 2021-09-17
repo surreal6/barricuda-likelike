@@ -12,9 +12,9 @@ var VERSION = "1.0";
 //for testing purposes I can skip the login phase
 //and join with a random avatar
 var QUICK_LOGIN = false;
-var DEBUG_CLICKS = false;
+var DEBUG_CLICKS = true;
 var DEBUG_SPRITES = false;
-var DEBUG_CONSOLE = false;
+var DEBUG_CONSOLE = true;
 
 console.silentLog = function(msg) {
     if (DEBUG_CONSOLE) {
@@ -66,7 +66,7 @@ var AVATAR_H = 18;
 //number of avatars in the sheets
 var AVATARS = 37;
 //the big file if used
-var ALL_AVATARS_SHEET = "allAvatars.png";
+var ALL_AVATARS_SHEET = "characters/allAvatars.png";
 //the number of frames for walk cycle and emote animation
 //the first frame of emote is also the idle frame
 var WALK_F = 4;
@@ -342,7 +342,7 @@ function preload() {
     menuBg = loadImage(ASSETS_FOLDER + MENU_BG_FILE);
     arrowButton = loadImage(ASSETS_FOLDER + "arrowButton.png");
 
-    var logoSheet = loadSpriteSheet(ASSETS_FOLDER + LOGO_FILE, 66, 82, 4);
+    var logoSheet = loadSpriteSheet(ASSETS_FOLDER + LOGO_FILE, 256, 200, 4);
     logo = loadAnimation(logoSheet);
     logo.frameDelay = 10;
 
@@ -367,17 +367,17 @@ function preload() {
 
     blips = [];
     for (var i = 0; i <= 5; i++) {
-        var blip = loadSound(ASSETS_FOLDER + "blip" + i);
+        var blip = loadSound(ASSETS_FOLDER + "audio/blip" + i);
         blip.playMode("sustain");
         blip.setVolume(0.3);
         blips.push(blip);
     }
 
-    appearSound = loadSound(ASSETS_FOLDER + "appear");
+    appearSound = loadSound(ASSETS_FOLDER + "audio/appear");
     appearSound.playMode("sustain");
     appearSound.setVolume(0.3);
 
-    disappearSound = loadSound(ASSETS_FOLDER + "disappear");
+    disappearSound = loadSound(ASSETS_FOLDER + "audio/disappear");
     disappearSound.playMode("sustain");
     disappearSound.setVolume(0.3);
 
@@ -497,7 +497,7 @@ function setup() {
                 var soundData = DATA.SOUNDS;
                 SOUNDS = {};
                 for (var i = 0; i < soundData.length; i++) {
-                    SOUNDS[soundData[i][0]] = loadSound(ASSETS_FOLDER + soundData[i][1]);
+                    SOUNDS[soundData[i][0]] = loadSound(ASSETS_FOLDER + "audio/" + soundData[i][1]);
                 }
 
 
@@ -775,7 +775,10 @@ function newGame() {
                         // with this approach background becomes the firsr sprite in allSprites
                         if (ROOMS[p.room].animations != null) {
 
-                            let bgAnim = createSprite(0, 0, 128, 100);
+                            let resolutionX = ROOMS[p.room].bgResolution ? ROOMS[p.room].bgResolution[0] : 128;
+                            let resolutionY = ROOMS[p.room].bgResolution ? ROOMS[p.room].bgResolution[1] : 100;
+
+                            let bgAnim = createSprite(0, 0, resolutionX, resolutionY);
                             bgAnim.background = true;
                         
                             // this example manages a 128x6400 spritesheet (64 frames of 128x100)
@@ -790,8 +793,9 @@ function newGame() {
                                     let startFrame = ROOMS[p.room].animations[animName][0];
                                     let duration = ROOMS[p.room].animations[animName][1];
                                     let endFrame = startFrame + duration;
-                                    let crop = bgg.get(0, 100 * startFrame, 128, 100 * endFrame);
-                                    let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
+                                    let crop = bgg.get(0, resolutionY * startFrame, resolutionX, resolutionY * endFrame);
+                                    let spritesheet = loadSpriteSheet(crop, resolutionX, resolutionY, duration);
+                                    // let spritesheet = loadSpriteSheet(crop, NATIVE_WIDTH, NATIVE_HEIGHT, duration);
                                     let anim = loadAnimation(spritesheet);
                                     anim.frameDelay = ROOMS[p.room].frameDelay;
                                     bgAnim.addAnimation(animName, anim);
@@ -801,17 +805,20 @@ function newGame() {
                             // set current lightState
                             //  TODO
                         
-                            bgAnim.depthOffset = -100;
-                            bgAnim.scale = 2;
-                            bgAnim.position.x = 128;
-                            bgAnim.position.y = 100;
-                        }
+                            bgAnim.depthOffset = -resolutionY;
+                            if (ROOMS[p.room].bgScale != null)
+                                bgAnim.scale = ROOMS[p.room].bgScale;
+                            else
+                                bgAnim.scale = 2;
+                            bgAnim.position.x = NATIVE_WIDTH;
+                            bgAnim.position.y = NATIVE_HEIGHT;
+                        } else {
+                            var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
+                            bg = loadAnimation(ss);
 
-                        var ss = loadSpriteSheet(bgg, NATIVE_WIDTH, NATIVE_HEIGHT, f);
-                        bg = loadAnimation(ss);
-
-                        if (ROOMS[p.room].frameDelay != null) {
-                            bg.frameDelay = ROOMS[p.room].frameDelay;
+                            if (ROOMS[p.room].frameDelay != null) {
+                                bg.frameDelay = ROOMS[p.room].frameDelay;
+                            }
                         }
                     }
 
@@ -1642,11 +1649,9 @@ function scaleCanvas() {
 
     // if frame in use, make it active once rescaled
     if (me && me.activeLink && me.activeLink !== "") {
-        frame.style.pointerEvents = "inherit";
-        frame.style.opacity = 1;
-        canvas.style.pointerEvents = "none";
+        showIframe();
     } else {
-        canvas.style.pointerEvents = "inherit";
+        hideIframe();
     }
 
     // scale active section to always match viewport
@@ -2014,7 +2019,11 @@ function isObstacle(x, y, room, a) {
         var c1 = a.get(px, py);
 
         //if not white check if color is obstacle
-        if (c1[0] != 255 || c1[1] != 255 || c1[2] != 255) {
+        // if (c1[0] != 255 || c1[1] != 255 || c1[2] != 255) {
+
+        // workaround to avoid color management problems in firefox
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=867594
+        if (c1[0] < 254 || c1[1] < 254 || c1[2] < 254) {
             var cmd = getCommand(c1, room);
 
             if (cmd != null)
@@ -2126,24 +2135,15 @@ function canvasReleased() {
                 if (sendToIframe === true) {
                     socket.emit("openIframe", longTextLink);
                     me.activeLink = longTextLink;
-
                     var frame = document.getElementById("iframe");
-
+                    showIframe();
                     // make iframe visible onload
                     frame.onload = function() {
                         if (this.src === "") {
-                            canvas.style.pointerEvents = "inherit";
+                            hideIframe();
                             socket.emit("exitIframe", longTextLink);
                         } else {
-                            this.style.pointerEvents = "inherit";
-                            this.style.opacity = 1;
-
-                            var exitButton = document.getElementById("exit-frame-button");
-                            exitButton.style.display = 'inherit';
-
-                            var talkForm = document.getElementById("talk-form");
-                            talkForm.style.display = 'none';
-                            canvas.style.pointerEvents = "none";
+                            frame.style.backgroundImage = "";
                         }
                     };
 
@@ -2230,27 +2230,6 @@ function canvasReleased() {
         }
     }
 
-}
-
-// make frame invisible and talkForm visible again
-function exitFrame() {
-    socket.emit("closeIframe", me.activeLink);
-
-    var frame = document.getElementById("iframe");
-    frame.onload = function() {
-        this.style.pointerEvents = "none";
-        this.style.opacity = 0;
-
-        var exitButton = document.getElementById("exit-frame-button");
-        exitButton.style.display = 'none';
-
-        var talkForm = document.getElementById("talk-form");
-        talkForm.style.display = 'inherit';
-
-        me.activeLink = "";
-    };
-
-    frame.setAttribute("src", "");
 }
 
 function sendPoolfromSection() {
@@ -2424,7 +2403,6 @@ function getCommand(c, roomId) {
 
     return command;
 }
-
 
 function executeCommand(c) {
     areaLabel = "";
@@ -3070,6 +3048,51 @@ function showChat() {
 
 function hideChat() {
     var e = document.getElementById("talk-form");
+    if (e != null)
+        e.style.display = "none";
+}
+
+//enable the iframe input when it's time
+function showIframe() {
+    var e = document.getElementById("iframe");
+
+    if (e != null) {
+        e.style.display = "block";
+        e.style.pointerEvents = "all";
+        hideChat();
+        showIframeButton();
+        let c = document.getElementById('canvas-container');
+        c.style.pointerEvents = "none";
+    }
+}
+
+function hideIframe() {
+    let e = document.getElementById("iframe");
+    if (e != null) {
+        e.style.display = "none";
+        e.style.pointerEvents = "none";
+        e.style.backgroundImage = 'url("assets/clock2.gif")';
+        hideIframeButton();
+        let c = document.getElementById('canvas-container');
+        c.style.pointerEvents = "all";
+        if (me) {
+            me.activeLink = "";
+            showChat();
+        }
+        
+        e.setAttribute("src", "");
+    }
+}
+
+//enable the chat input when it's time
+function showIframeButton() {
+    var e = document.getElementById("exit-frame-button");
+    if (e != null)
+        e.style.display = "inherit";
+}
+
+function hideIframeButton() {
+    var e = document.getElementById("exit-frame-button");
     if (e != null)
         e.style.display = "none";
 }
