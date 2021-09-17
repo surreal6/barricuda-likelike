@@ -1,4 +1,28 @@
+<!-- vscode-markdown-toc -->
+* 1. [Intro](#Intro)
+* 2. [New features:](#Newfeatures:)
+	* 2.1. [Join and Leave functions for any room](#JoinandLeavefunctionsforanyroom)
+	* 2.2. [Define actions on NPC clicks](#DefineactionsonNPCclicks)
+	* 2.3. [Define actions in text commands](#Defineactionsintextcommands)
+	* 2.4. [Debug more accesible](#Debugmoreaccesible)
+	* 2.5. [Traffic log](#Trafficlog)
+	* 2.6. [Traffic resume by email](#Trafficresumebyemail)
+	* 2.7. [Open links in an iframe in the current page](#Openlinksinaniframeinthecurrentpage)
+	* 2.8. [Load background images of any resolution](#Loadbackgroundimagesofanyresolution)
+	* 2.9. [force scale and offset to modify the appearance of things in the room.](#forcescaleandoffsettomodifytheappearanceofthingsintheroom.)
+	* 2.10. [perspective mode.](#perspectivemode.)
+	* 2.11. [animated background.  Background become a sprite and can be animated.](#animatedbackground.Backgroundbecomeaspriteandcanbeanimated.)
+	* 2.12. [add surveys inside game](#addsurveysinsidegame)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
 # BARRICUDA LIKELIKE Online
+
+##  1. <a name='Intro'></a>Intro
 
 The tiniest MMORPG. Choose an avatar and hang out with your friends in a virtual version of [La Barricuda](http://labarricuda.blogspot.com/2006/10/instalaciones.html).
 
@@ -14,15 +38,15 @@ This project is an extension of original [likelike](https://github.com/molleindu
 Look [here](https://github.com/molleindustria/likelike-online#readme) for basic usage instructions.
 
 
-# New features:
+##  2. <a name='Newfeatures:'></a>New features:
 
 
 
-## Join and Leave functions for any room
+###  2.1. <a name='JoinandLeavefunctionsforanyroom'></a>Join and Leave functions for any room
 
 You can declare anyRoomJoin and anyRoomLeave functions in your serverMod file and they will be executed when entering and leaving any room, so you don't need to copypaste lots of code anymore.
 
-## Define actions on NPC clicks
+###  2.2. <a name='DefineactionsonNPCclicks'></a>Define actions on NPC clicks
 
 You can define actions to be triggered when clicking NPCs. In this example, clicking the 'divulgadorNpc will execute onDivulgador function, if it exist in your serverMod file.
 
@@ -38,7 +62,7 @@ You can define actions to be triggered when clicking NPCs. In this example, clic
         actionId: "Divulgador"
     });
 
-## Define actions in text commands
+###  2.3. <a name='Defineactionsintextcommands'></a>Define actions in text commands
 
 You can define an action inside a text command, to be executed at the time of running the command, or add the postAction attribute to force the execution after closing the text.
 
@@ -46,7 +70,7 @@ You can define an action inside a text command, to be executed at the time of ru
 
 This example runs onMyAction function after the text is closed. onMyAction function must be declared in your serverMod file.
 
-## Debug more accesible
+###  2.4. <a name='Debugmoreaccesible'></a>Debug more accesible
 
 In client.js you will find these selectors. Just set them to true.
 
@@ -61,7 +85,7 @@ You can also mute server console by adding a .env variable
 
     VERBOSE = false
     
-## Traffic log
+###  2.5. <a name='Trafficlog'></a>Traffic log
 
 Add this to .env file:
 
@@ -107,7 +131,7 @@ A log file will be created in /logs.  It will register the following actions in 
     timeStamp (ISO format), userID, 'disconnect'
     ```
 
-## Traffic resume by email
+###  2.6. <a name='Trafficresumebyemail'></a>Traffic resume by email
 
 You should activate TRaffic log feature for this to work!!!
 
@@ -137,7 +161,7 @@ Three cron tasks will be created:
  
       You can run this event at any time by using the '/collectGlobal' admin command
 
-## Open links in an iframe in the current page
+###  2.7. <a name='Openlinksinaniframeinthecurrentpage'></a>Open links in an iframe in the current page
 
 Now you can define a link to open in an iframe inside the current page instead of open it in a new tab. For this, add this attribute in the command definition (valid for areas and things):
 
@@ -147,14 +171,14 @@ In example:
 
     h0066ff: { cmd: "text", iframe: true, label: "myLabel", point: [62, 77], txt: 'Intro text', lines: 1, url: "https://www.whatever.com" }
 
-## Load background images of any resolution
+###  2.8. <a name='Loadbackgroundimagesofanyresolution'></a>Load background images of any resolution
 
 Adding this to the room declaration in the data file, you can bypass the 128x100 rule 
 
     bgScale: 1,
     bgResolution: [256, 200],
 
-## force scale and offset to modify the appearance of things in the room.
+###  2.9. <a name='forcescaleandoffsettomodifytheappearanceofthingsintheroom.'></a>force scale and offset to modify the appearance of things in the room.
 
 I found a bug in the depthOffset calculation and fixed it to make it scale dependant. Now depth drawing will work with sprites in different scales.
 
@@ -162,13 +186,13 @@ In 'hall' room, look how i set the 'mesa' thing with a fixed offset of 10. Also 
 
 Look at 'sillas' things in the 'classroom' room. Each one uses a different scale and the scene profit from the bug fixed. You can change avatarScale and the depth calculation still works fine.
 
-## perspective mode.
+###  2.10. <a name='perspectivemode.'></a>perspective mode.
 
 You can define a special function to calculate player scales for each room. This does not affect things, as they are expected to be static. Use scale and offset to align things in perspective. The debug mode draw is very helpfull for this, so i added a yellow line to show the depthOffset (it should be the 'feet' of the sprite at any scale)
 
 Walk into 'cave' room to see it working.
 
-## animated background.  Background become a sprite and can be animated.
+###  2.11. <a name='animatedbackground.Backgroundbecomeaspriteandcanbeanimated.'></a>animated background.  Background become a sprite and can be animated.
 
 Define animated background adding this property "animations" in the data.js
 
@@ -208,7 +232,7 @@ change animation in bg:
 
 This feature is a Work In Progress.
 
-## add surveys inside game
+###  2.12. <a name='addsurveysinsidegame'></a>add surveys inside game
 
 Look at clientMod.js to see how to define a survey. It allows normal inputs, checkbox selectors (with and without images) and radio selectors. Surveys html are auto generated inside a section element added in the index.html.
 
