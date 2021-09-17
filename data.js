@@ -2,7 +2,7 @@
 //they are either related to the rooms or shared with the server 
 module.exports.SETTINGS = {
     //if not specified by the url where is the starting point
-    defaultRoom: "hall",
+    defaultRoom: "desierto",
     //minimum time between talk messages enforced by both client and server
     ANTI_SPAM: 1000,
     //shows up at first non lurking login
@@ -66,13 +66,13 @@ module.exports.ROOMS = {
             // #ffff00
             hffff00: { cmd: "action", label: "hall switch", point: [51, 70], actionId: 'HallLight', obstacle: false },
             // #0066ff
-            h0066ff: { cmd: "text", label: "La Barricuda", point: [88, 63], iframe: false, txt: 'La Barricuda fue la escuela de\ncreación audiovisual del colectivo\nAventuras Visuales de 2006 a 2009', lines: 3, url: "http://labarricuda.blogspot.com/2006/10/instalaciones.html", obstacle: false }
+            h0066ff: { cmd: "text", label: "La Barricuda", point: [88, 63], iframe: false, txt: 'La Barricuda fue la escuela de\ncreación audiovisual del colectivo\nAventuras Visuales de 2006 a 2009', lines: 3, url: "https://labarricuda.blogspot.com/2006/10/instalaciones.html", obstacle: false }
         },
         things: {
             columna: { file: "/barricuda/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
-            mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "http://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
-            survey1: { file: "/barricuda/interruptor.png", id: "pool1 switch", frames: 1, frameDelay: 60, visible: true, label: "survey sample 1", position: [119, 66], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool1", section: 'pool-section', obstacle: false } },
-            survey2: { file: "/barricuda/interruptor.png", id: "pool2 switch", frames: 1, frameDelay: 60, visible: true, label: "survey sample 2", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool3", section: 'pool-section', obstacle: false } },
+            mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "https://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
+            // survey: { file: "/barricuda/interruptor.png", id: "poolswitch", frames: 1, frameDelay: 60, visible: true, label: "survey sample", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool", section: 'pool-section', obstacle: false } },
+            examen: { file: "/rooms/examen.png", id: "examen", label: "examen", scale: 1, offset: 25, position: [35, 75], frames: 1, frameDelay: 60, visible: true, command: { cmd: "text", txt: "Examen", lines: 2, pool: "pool", section: "pool-section", label: "encuesta", point: [57, 78], obstacle: false } }
         }
     },
     classroom: {
@@ -155,5 +155,36 @@ module.exports.ROOMS = {
         things: {
             techo: { file: "/barricuda/techo-sotano.png", id: "techo", position: [0, 0], offset: 100, frames: 1, frameDelay: 60, visible: true },
         }
-    }
+    },
+    desierto: {
+        // desert images from https://cocomaterial.com/
+        bg: "/rooms/desierto.png",
+        frames: 1,
+        animations: { 
+            anim: [0, 1],
+        },
+        bgScale: 1,
+        bgResolution: [256, 200],
+        frameDelay: 60,
+        avatarScale: 5,
+        perspective: "desiertoPerspective",
+        pageBg: "#000",
+        area: "/rooms/desierto-areas.png",
+        tint: "#fdeac8",
+        bubblesY: 44,
+        spawn: [30, 35, 98, 35],
+        areaColors: {
+            //h will be replaced by #
+            // #ff0000
+            hff0000: { cmd: "enter", room: "hall", label: "ESPEJISMOS", point: [117, 95], enterPoint: [120, 82], obstacle: false },
+            // #00ff00
+            h00ff00: { cmd: "text", lines: 3, txt: "", label: "esqueleto", point: [109, 42], obstacle: false },
+            // #00ffff
+            h00ffff: { cmd: "text", lines: 3, txt: "", label: "reflejos dorados", point: [33, 50], obstacle: false },
+        },
+        things: {
+            dromedario: { file: "/rooms/desierto-dromedario.png", id: "dromedario", scale: 1, position: [-2, 51], frames: 1, frameDelay: 60, visible: true }
+        }
+    },
+    
 };

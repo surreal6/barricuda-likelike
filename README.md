@@ -16,6 +16,8 @@ Look [here](https://github.com/molleindustria/likelike-online#readme) for basic 
 
 # New features:
 
+
+
 ## Join and Leave functions for any room
 
 You can declare anyRoomJoin and anyRoomLeave functions in your serverMod file and they will be executed when entering and leaving any room, so you don't need to copypaste lots of code anymore.
@@ -144,6 +146,13 @@ Now you can define a link to open in an iframe inside the current page instead o
 In example:
 
     h0066ff: { cmd: "text", iframe: true, label: "myLabel", point: [62, 77], txt: 'Intro text', lines: 1, url: "https://www.whatever.com" }
+
+## Load background images of any resolution
+
+Adding this to the room declaration in the data file, you can bypass the 128x100 rule 
+
+    bgScale: 1,
+    bgResolution: [256, 200],
 
 ## force scale and offset to modify the appearance of things in the room.
 

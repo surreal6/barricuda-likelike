@@ -41,6 +41,17 @@ function afterPool(data) {
     console.silentLog("Answers ", data);
 }
 
+function desiertoPerspective(sprite) {
+    let s;
+    let pos = round(sprite.position.y + sprite.depthOffset);
+    if (pos < 35) {
+        s = map(sprite.depth, 0 , 34, 0.1, 0.2);
+    } else {
+        s = map(sprite.depth, 35 , height, 0.1, 3);
+    }
+
+    return s;
+}
 
 
 const POOLS = {
