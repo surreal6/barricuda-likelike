@@ -969,7 +969,7 @@ function newGame() {
             try {
                 console.silentLog("Player " + p.id + " left " + p.room);
 
-                if (p.id == me.id) {
+                if (me && p.id == me.id) {
                     silentPrint("STOP MUSIC");
                     //stop music before you leave, if any
                     if (ROOMS[p.room].musicLoop != null) {
@@ -1143,7 +1143,7 @@ function newGame() {
         //find the data thing
         var dataThing = ROOMS[t.room].things[t.thingId];
 
-        if (dataThing != null && t.room == me.room) {
+        if (me && dataThing != null && t.room == me.room) {
 
             //remove the visual representation
             removeThing(t.thingId, t.room);
