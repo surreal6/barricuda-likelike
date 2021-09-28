@@ -80,6 +80,8 @@ var SETTINGS;
 //preloaded sound image asset from data.js
 var IMAGES, SOUNDS;
 
+var globalMute = false;
+
 //avatar linear speed, pixels per milliseconds
 var SPEED = 50;
 
@@ -3125,15 +3127,76 @@ function preventBehavior(e) {
 
 document.addEventListener("touchmove", preventBehavior, { passive: false });
 
+function muteAll()  {
+    Object.keys(SOUNDS).forEach((sound) => {
+        SOUNDS[sound].stop();
+    })
+}
+
+function loopMusic(music) {
+    console.silentLog('playing ' + music);
+    if (SOUNDS && SOUNDS[music] && !SOUNDS[music]._playing) {
+        console.silentLog('playing ' + music);
+        muteAll();
+        SOUNDS[music].loop();
+    }
+}
+
+function muteMusicButton() {
+    globalMute = true;
+    muteMusic()
+}
+
+function unmuteMusicButton() {
+    globalMute = false;
+    unmuteMusic()
+}
+
+function muteMusic() {
+    masterVolume(0);
+    if (SOUNDS) {
+        Object.keys(SOUNDS).forEach((sound) => {
+            if (SOUNDS[sound]._playing) {
+                SOUNDS[sound].pause();
+            }
+        })
+    }
+
+    document.getElementById('mute').style.display = 'inherit';
+    document.getElementById('unmute').style.display = 'none';
+}
+
+function unmuteMusic() {
+    masterVolume(1);
+    if (SOUNDS) {
+        Object.keys(SOUNDS).forEach((sound) => {
+            if (SOUNDS[sound]._paused) {
+                SOUNDS[sound].play();
+            }
+        })
+    }
+
+    document.getElementById('mute').style.display = 'none';
+    document.getElementById('unmute').style.display = 'inherit';
+}
+
 // Active
 window.addEventListener("focus", function () {
-    if (socket != null && me != null)
+    if (socket != null && me != null) {
         socket.emit("focus", { room: me.room });
+        if (!globalMute) {
+            unmuteMusic();
+        }
+    }
 });
 
 // Inactive
 window.addEventListener("blur", function () {
-    if (socket != null && me != null)
+    if (socket != null && me != null) {
         socket.emit("blur", { room: me.room });
+        if (!globalMute) {
+            muteMusic();
+        }
+    }
 });
 
