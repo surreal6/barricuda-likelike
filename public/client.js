@@ -2140,10 +2140,9 @@ function canvasReleased() {
                     // make iframe visible onload
                     frame.onload = function() {
                         if (this.src === "") {
-                            hideIframe();
                             socket.emit("exitIframe", longTextLink);
                         } else {
-                            frame.style.backgroundImage = "";
+                            hideIframeLoader();
                         }
                     };
 
