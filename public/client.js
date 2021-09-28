@@ -3112,6 +3112,12 @@ function hideIframeButton() {
         e.style.display = "none";
 }
 
+function removeStartInfo() {
+    var e = document.getElementById("start-info");
+    if (e != null)
+        e.style.display = "none";
+}
+
 function outOfCanvas() {
     areaLabel = "";
     rolledSprite = null;
