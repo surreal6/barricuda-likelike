@@ -3056,6 +3056,7 @@ function showIframe() {
     var e = document.getElementById("iframe");
 
     if (e != null) {
+        showIframeLoader();
         e.style.display = "block";
         e.style.pointerEvents = "all";
         hideChat();
@@ -3070,7 +3071,6 @@ function hideIframe() {
     if (e != null) {
         e.style.display = "none";
         e.style.pointerEvents = "none";
-        e.style.backgroundImage = 'url("assets/clock2.gif")';
         hideIframeButton();
         let c = document.getElementById('canvas-container');
         c.style.pointerEvents = "all";
@@ -3080,6 +3080,20 @@ function hideIframe() {
         }
         
         e.setAttribute("src", "");
+    }
+}
+
+function showIframeLoader() {
+    let e = document.getElementById("iframe");
+    if (e != null) {
+        e.style.backgroundImage = 'url("assets/clock2.gif")';
+    }
+}
+
+function hideIframeLoader() {
+    let e = document.getElementById("iframe");
+    if (e != null) {
+        e.style.backgroundImage = 'url("")';
     }
 }
 
