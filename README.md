@@ -304,6 +304,7 @@ Code licensed under a GNU Lesser General Public License v2.1.
 ###  3.1. <a name='Imagelicenses'></a>Image licenses 
 
 hall, classroom and cave images by Carlos Padial  CC-by-nc
+
 desert images from https://cocomaterial.com/
 
 ###  3.2. <a name='Musiclicenses'></a>Music licenses 
