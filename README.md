@@ -1,6 +1,6 @@
 <!-- vscode-markdown-toc -->
 * 1. [Intro](#Intro)
-* 2. [New features:](#Newfeatures)
+* 2. [New features](#Newfeatures)
 	* 2.1. [Iframe feature](#Iframefeature)
 		* 2.1.1. [Open links in an iframe in the current page](#Openlinksinaniframeinthecurrentpage)
 		* 2.1.2. [iframe warnings](#iframewarnings)
@@ -26,7 +26,7 @@
 		* 2.6.4. [definepre and post action](#definepreandpostaction)
 		* 2.6.5. [Debug more accesible](#Debugmoreaccesible)
 * 3. [credits](#credits)
-	* 3.1. [Image licenses:](#Imagelicenses)
+	* 3.1. [Image licenses](#Imagelicenses)
 	* 3.2. [Music licenses](#Musiclicenses)
 
 <!-- vscode-markdown-toc-config
