@@ -1,6 +1,6 @@
 <!-- vscode-markdown-toc -->
 * 1. [Intro](#Intro)
-* 2. [New features:](#Newfeatures:)
+* 2. [New features:](#Newfeatures)
 	* 2.1. [Iframe feature](#Iframefeature)
 		* 2.1.1. [Open links in an iframe in the current page](#Openlinksinaniframeinthecurrentpage)
 		* 2.1.2. [iframe warnings](#iframewarnings)
@@ -26,7 +26,7 @@
 		* 2.6.4. [definepre and post action](#definepreandpostaction)
 		* 2.6.5. [Debug more accesible](#Debugmoreaccesible)
 * 3. [credits](#credits)
-	* 3.1. [Image licenses:](#Imagelicenses:)
+	* 3.1. [Image licenses:](#Imagelicenses)
 	* 3.2. [Music licenses](#Musiclicenses)
 
 <!-- vscode-markdown-toc-config
@@ -52,7 +52,7 @@ This project is an extension of original [likelike](https://github.com/molleindu
 Look [here](https://github.com/molleindustria/likelike-online#readme) for basic usage instructions.
 
 
-##  2. <a name='Newfeatures:'></a>New features:
+##  2. <a name='Newfeatures'></a>New features
 
 ###  2.1. <a name='Iframefeature'></a>Iframe feature
 
@@ -301,7 +301,7 @@ You can also mute server console by adding a .env variable
 Code licensed under a GNU Lesser General Public License v2.1.
 
 
-###  3.1. <a name='Imagelicenses:'></a>Image licenses: 
+###  3.1. <a name='Imagelicenses'></a>Image licenses 
 
 hall, classroom and cave images by Carlos Padial  CC-by-nc
 desert images from https://cocomaterial.com/
