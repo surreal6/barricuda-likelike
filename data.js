@@ -13,18 +13,18 @@ module.exports.SETTINGS = {
 module.exports.IMAGES = [
 ];
 
+
 //miscellaneous sounds to preload
+// music cc-by-nc Dragan Espenschied https://freemusicarchive.org/music/Dragan_Espenschied#contact-artist
 module.exports.SOUNDS = [
-    ["beat1", "beat1.ogg"], //credit https://www.youtube.com/watch?v=ugLVpZm69DE
-    ["beat2", "beat2.ogg"], // credit https://www.youtube.com/watch?v=dPdoxIz0w24
-    ["beat3", "beat3.ogg"], //credit https://www.youtube.com/watch?v=XShEWT4MwJs
-    ["DJStop", "DJStop.mp3"]
+    ["intro", "Dragan Espenschied - Iced Earth.mp3"],
+    ["polca", "Dragan Espenschied - Procrastination Polka.mp3"],
+    ["zombie", "Dragan Espenschied - Zombie & Mummy Theme.mp3"]
 ];
 
 module.exports.ROOMS = {
-
     hall: {
-        bg: "/barricuda/entrada-spritesheet.png",
+        bg: "/rooms/entrada-spritesheet.png",
         frames: 4,
         animations: { 
             bg0000: [0, 4], 
@@ -47,7 +47,7 @@ module.exports.ROOMS = {
         frameDelay: 60,
         avatarScale: 3,
         pageBg: "#1c2016",
-        area: "/barricuda/entrada-areas.png",
+        area: "/rooms/entrada-areas.png",
         tint: "#fdeac8",
         bubblesY: 44,
         spawn: [80, 80, 120, 98],
@@ -69,14 +69,14 @@ module.exports.ROOMS = {
             h0066ff: { cmd: "text", label: "La Barricuda", point: [88, 63], iframe: false, txt: 'La Barricuda fue la escuela de\ncreación audiovisual del colectivo\nAventuras Visuales de 2006 a 2009', lines: 3, url: "https://labarricuda.blogspot.com/2006/10/instalaciones.html", obstacle: false }
         },
         things: {
-            columna: { file: "/barricuda/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
-            mesa: { file: "/barricuda/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "https://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
-            // survey: { file: "/barricuda/interruptor.png", id: "poolswitch", frames: 1, frameDelay: 60, visible: true, label: "survey sample", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool", section: 'pool-section', obstacle: false } },
+            columna: { file: "/rooms/barri_entrada-columna.png", id: "columna", position: [53, 35], frames: 1, frameDelay: 60, visible: true },
+            mesa: { file: "/rooms/barri_entrada-mesa.png", id: "mesa", offset: 10, position: [59, 46], frames: 1, frameDelay: 60, visible: true, label: "Cursos y talleres", command: { cmd: "text", iframe: false, txt: "En este local se realizaron cursos y talleres de practicamente todas las disciplinas cinematográficas", align: "left", lines: 3, url: "https://labarricuda.blogspot.com/2006/10/presentacin.html", point: [82, 75] } },
+            // survey: { file: "/rooms/interruptor.png", id: "poolswitch", frames: 1, frameDelay: 60, visible: true, label: "survey sample", position: [124, 68], command: { cmd: "text", txt:"texto", lines: 1, point: [110, 79], pool: "pool", section: 'pool-section', obstacle: false } },
             examen: { file: "/rooms/examen.png", id: "examen", label: "examen", scale: 1, offset: 25, position: [35, 75], frames: 1, frameDelay: 60, visible: true, command: { cmd: "text", txt: "Examen", lines: 2, pool: "pool", section: "pool-section", label: "encuesta", point: [57, 78], obstacle: false } }
         }
     },
     classroom: {
-        bg: "/barricuda/aula-spritesheet.png",
+        bg: "/rooms/aula-spritesheet.png",
         frames: 4,
         animations: { 
             bg0000: [0, 4], 
@@ -99,7 +99,7 @@ module.exports.ROOMS = {
         frameDelay: 60,
         avatarScale: 3,
         pageBg: "#765f52",
-        area: "/barricuda/aula-areas.png",
+        area: "/rooms/aula-areas.png",
         tint: "#fdeac8",
         bubblesY: 44,
         spawn: [14, 84, 119, 92],
@@ -113,13 +113,13 @@ module.exports.ROOMS = {
             h00ff00: { cmd: "action", label: "Medvedkin", actionId: "Medvedkin", point: [84, 69], obstacle: false },
         },
         things: {
-            silla1: { file: "/barricuda/sillas2.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
-            silla2: { file: "/barricuda/sillas.png", id: "silla2", scale: 1.6, position: [10, 65], frames: 1, frameDelay: 60, visible: true },
-            silla3: { file: "/barricuda/sillas.png", id: "silla3", scale: 2, position: [10, 80], frames: 1, frameDelay: 60, visible: true },
+            silla1: { file: "/rooms/sillas2.png", id: "silla1", scale: 1.4, position: [10, 55], frames: 1, frameDelay: 60, visible: true },
+            silla2: { file: "/rooms/sillas.png", id: "silla2", scale: 1.6, position: [10, 65], frames: 1, frameDelay: 60, visible: true },
+            silla3: { file: "/rooms/sillas.png", id: "silla3", scale: 2, position: [10, 80], frames: 1, frameDelay: 60, visible: true },
         }
     },
     cave: {
-        bg: "/barricuda/cueva-spritesheet.png",
+        bg: "/rooms/cueva-spritesheet.png",
         frames: 4,
         animations: { 
             bg0000: [0, 4], 
@@ -143,7 +143,7 @@ module.exports.ROOMS = {
         frameDelay: 60,
         avatarScale: 5,
         pageBg: "#765f52",
-        area: "/barricuda/cueva-areas.png",
+        area: "/rooms/cueva-areas.png",
         tint: "#fdeac8",
         bubblesY: 14,
         spawn: [68, 60, 82, 70],
@@ -153,7 +153,7 @@ module.exports.ROOMS = {
             hce7b00: { cmd: "enter", room: "hall", label: "hall", point: [30, 19], enterPoint: [34, 70], obstacle: false }
         },
         things: {
-            techo: { file: "/barricuda/techo-sotano.png", id: "techo", position: [0, 0], offset: 100, frames: 1, frameDelay: 60, visible: true },
+            techo: { file: "/rooms/techo-sotano.png", id: "techo", position: [0, 0], offset: 100, frames: 1, frameDelay: 60, visible: true },
         }
     },
     desierto: {
@@ -186,5 +186,4 @@ module.exports.ROOMS = {
             dromedario: { file: "/rooms/desierto-dromedario.png", id: "dromedario", scale: 1, position: [-2, 51], frames: 1, frameDelay: 60, visible: true }
         }
     },
-    
 };
