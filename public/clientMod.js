@@ -17,13 +17,21 @@ function initMod(playerId, roomId) {
     // add custom client listeners HERE
 
     // //prevent duplicate listeners
-    // if (!socket.hasListeners('event')) {
-    //     socket.on("event", function (msg) {
-    //         if (socket.id) {
-    //             console.silentLog('event happend');
-    //         }
-    //     });
-    // }
+    if (!socket.hasListeners('loopMusic')) {
+        socket.on("loopMusic", function (music) {
+            loopMusic(music);
+        });
+
+        socket.on("polcaToggle", function (music) {
+            if (SOUNDS["polca"]._playing) {
+                loopMusic("intro");
+            } else {
+                loopMusic("polca");
+            }
+
+            
+        });
+    }
 }
 
 function cuevaPerspective(sprite) {
@@ -80,41 +88,41 @@ const POOLS = {
             },
             question2: {
                 type: 'radio',
-                text: '¿sabes emplear comandos de búsquedas para obtener resultados más acertados?',
+                text: 'What fruit is this?',
                 image: 'assets/fruits/banana.jpg',
                 options: [
                     {
-                        label: 'Conozco todos esos comandos y muchos más',
+                        label: 'banana',
                     },
                     {
-                        label: 'Conozco algunos, otros no',
+                        label: 'blueberries',
                     },
                     {
-                        label: 'No conocía ninguno',
+                        label: 'watermellon',
                     },
                 ]
             },
             question3: {
                 type: 'radio',
-                text: 'Hace unos meses viste un video que te encantó en twitter y quieres enseñárselo a un amigo/a ¿cómo lo buscas?',
+                text: 'Can you answer questions without images?',
                 options: [
                     {
-                        label: 'Lo tengo en una carpeta de videos en mis marcadores'
+                        label: 'Yes'
                     },
                     {
-                        label: 'buscando en twitter por el tema del video para volverlo a encontrar'
+                        label: 'of course yes'
                     },
                     {
-                        label: 'ufff, no creo que lo vuelva a encontrar, pero se lo cuento'
+                        label: 'of course no'
                     },
                     {
-                        label: 'Con las opciones de búsqueda avanzada en el buscador'
+                        label: 'no'
                     },
                 ]
             },
             question4: {
                 type: 'checkbox',
-                text: 'Selecciona todas las imágenes que son falsas',
+                text: 'Can you draw inside the images?',
                 images: true,
                 options: [
                     {
