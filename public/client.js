@@ -641,6 +641,11 @@ function newGame() {
         showChat();
     }
 
+    // start intro music if it exists
+    if (SOUNDS && SOUNDS.intro && !SOUNDS.intro._playing) {
+        loopMusic('intro');
+    }
+
     //this is not super elegant but I create another socket for the actual game
     //because I've got the data from the server and I don't want to reinitiate everything 
     //if the server restarts
