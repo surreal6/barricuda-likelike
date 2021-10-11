@@ -127,6 +127,18 @@ module.exports.initMod = function (io, gameState, DATA) {
     }, random(2000, 3000));
 }
 
+module.exports.anyRoomJoin = function(player, roomId) {
+    // music
+    switch (roomId) {
+        case 'desierto':
+            io.to(player.id).emit('loopMusic', 'zombie');
+            break;
+        default:
+            io.to(player.id).emit('loopMusic', 'intro');
+            break;
+    }
+}
+
 // the cave uses the VIPRoom rules in original likelike
 module.exports.caveJoin = function (playerObject, roomId) {
     // console.silentLog(playerObject.nickName + " enters the VIP room");
@@ -284,6 +296,7 @@ module.exports.setLightState = function (pId) {
 module.exports.onMedvedkin = function (pId) {
     global.lightState[0] =  global.lightState[0] === 1 ? 0 : 1;
     // emit change to all clients
-    io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""))
+    io.sockets.emit('changeBgAnim', 'bg' + global.lightState.join(""));
+    io.sockets.emit('polcaToggle');
 }
 
