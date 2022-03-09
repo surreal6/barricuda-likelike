@@ -4,6 +4,73 @@ const path = require('path');
 const { start } = require('repl');
 const mailer = require('./mailer');
 
+const generateJson = function(fileUrl, callback) {
+    fs.readFile(fileUrl, function(err, buf) {
+        let visitors = {};
+        let poolNames = [];
+        let poolCounter = {};
+        let counter = 0;
+        if (buf === undefined) {
+            console.log('ERROR');
+            console.log(fileUrl);
+        }
+        console.silentLog('start json generation');
+        const buffer = buf.toString().split('\n');
+        for (let i = 0; i < buffer.length; i++) {
+            const line = buffer[i];
+            const cmd = line.split(',')[2] || line.split(',')[1];
+            if (cmd === "serverStart" || cmd === undefined) {
+                continue;
+            }
+            const timestamp = line.split(',')[0];
+            const usr = line.split(',')[1];
+            switch (cmd) {
+                case "join":
+                    if (usr && !visitors[usr]) visitors[usr] = {};
+                    visitors[usr].join = timestamp;
+                    visitors[usr].name = line.split(',')[3];
+                    break;
+                case "profile":
+                    if (usr && !visitors[usr]) visitors[usr] = {};
+                    visitors[usr].profile = line.split('profile')[1];
+                    break;
+                case "poolAnswers":
+                    if (usr && !visitors[usr]) visitors[usr] = {};
+                    let data = line.split('poolAnswers,')[1].split(',');
+                    // remove first element (user ID)
+                    data.shift();
+                    let poolName = data.splice(0, 1);
+                    if (!poolCounter[poolName]) {
+                        poolCounter[poolName] = 0;
+                    }
+                    poolNames.push(poolName);
+                    visitors[usr][poolName] = data;
+                    poolCounter[poolName]++;
+                    counter++;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        console.log('visitors: ' + Object.keys(visitors).length);
+        console.log('total pools: ' + counter);
+
+        for (let i = 0; i < Object.keys(poolCounter).length; i++) {
+            const poolName = Object.keys(poolCounter)[i];
+            const poolCount = poolCounter[poolName];
+            console.log(poolName + ' answered: ' + poolCount);    
+        }
+        let jsonUrl =fileUrl.split('.csv')[0] + '.json';
+        fs.writeFileSync(jsonUrl, JSON.stringify(visitors));
+        
+        let jsonFilename = jsonUrl.split('/')[fileUrl.split('/').length - 1];
+        if (callback) callback(jsonFilename, jsonUrl);
+    });
+};
+
+
 module.exports = {
     createDirectory: function(dirName) {
         let homedir =path.join(__dirname, '..');
@@ -72,15 +139,16 @@ module.exports = {
 
         for (let index = 0; index < files.length; index++) {
             let filename = files[index];
-            console.silentLog('included and archived ' + filename);
             let filePath = path.join(logDir, filename);
-            fs.readFile(filePath, function(err, buf) {
-                fs.appendFile(rangeLogFilename, buf.toString(), function() {
-                    fs.rename(filePath, path.join(archivePath, filename), function() {
-                        console.silentLog('moving daily ' + filename + ' to ' + archivePath);
-                    });
-                });
-            })
+
+            try {
+                const buf = fs.readFileSync(filePath)
+                fs.appendFileSync(rangeLogFilename, buf.toString())
+                fs.renameSync(filePath, path.join(archivePath, filename))
+                console.silentLog('collect and archive ' + filename);
+            } catch (e) {
+                throw new Error('something failed appending logs')
+            }
         }
 
         return rangeLogFilename;
@@ -159,6 +227,9 @@ module.exports = {
                 const days = collection[week];
                 console.silentLog(week, days, 'generating range Log and moving files to archive');
                 let filename = generateLog(days, archiveDir, path.join(__dirname, '../logs/weeks'), path.join(__dirname, '../logs/archive'));
+                setTimeout(function() {
+                    let jsonUrl = generateJson(filename);
+                }, 10000)
             }
         });
     },
@@ -167,10 +238,24 @@ module.exports = {
         let generateLog = this.generateLog;
         let sendFileByMail = this.sendFileByMail;
         this.getUnstoredDailyLogsFromPath(archiveDir, function(files) {
-            let filename = generateLog(files, archiveDir,  path.join(__dirname, '../logs/weeks'), path.join(__dirname, '../logs/archive'));
-            setTimeout(function() {
-                sendFileByMail(filename, "week Log");
-            }, 5000);
+            // exclude today file if it exist.
+            let collectableFiles = [];
+            for (let index = 0; index < files.length; index++) {
+                const element = files[index];
+                if (element.split('.csv')[0] !== today) {
+                    collectableFiles.push(element);
+                }
+            }
+            if (collectableFiles.length > 1) {
+                let filename = generateLog(collectableFiles, archiveDir,  path.join(__dirname, '../logs/weeks'), path.join(__dirname, '../logs/archive'));
+                setTimeout(function() {
+                    let jsonUrl = generateJson(filename, function(jsonFilename, jsonUrl){
+                        sendFileByMail(jsonUrl, "week Log");
+                    });
+                }, 10000);
+            } else {
+                console.silentLog('collect Week: no files to collect');
+            }
         });
     },
     sendLastWeekLog: function() {
@@ -199,7 +284,7 @@ module.exports = {
                 fs.copyFile(filename, path.join(archiveDir, '../../public/logs/global.txt'), function() {
                     console.silentLog('moving global');
                 });
-            }, 5000);
+            }, 10000);
             return files;
         });
     }
