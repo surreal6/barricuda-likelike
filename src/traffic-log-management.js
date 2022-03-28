@@ -1,4 +1,4 @@
-const { dir } = require('console');
+const { time } = require('console');
 const fs = require('fs');
 const path = require('path');
 const { start } = require('repl');
@@ -113,28 +113,36 @@ module.exports = {
         this.createDirectory('logs/weeks');
         this.createDirectory('logs/global');
         this.createDirectory('public/logs');
-        let logFileName = './logs/' + startTime + '.txt';
+        let logFileName = './logs/' + startTime + '.csv';
         this.appendToLog(logFileName, startTime + ',serverStart');
         return logFileName;
     },
     changeLogFileName: function (time) {
         time = this.timeToLocale(new Date(time));
         time = this.timeToFileName(new Date(time));
-        let logFileName = './logs/' + time + '.txt';
+        let logFileName = './logs/' + time + '.csv';
         return logFileName;
     },
     generateLog: function (files, logDir, exportPath, archivePath, callback) {
         // concatenate files
-        let f0 = files[0].split('.txt')[0];
+        let f0 = files[0].split('.csv')[0];
         if (f0.includes('_to_')) {
             f0 = f0.split('_to_')[0];
         }
-        let f1 = files[files.length - 1].split('.txt')[0];
+        let f1 = files[files.length - 1].split('.csv')[0];
         if (f1.includes('_to_')) {
             f1 = f1.split('_to_')[1];
         }
         let rangeString = f0 + '_to_' + f1;
-        let rangeLogFilename = path.join(exportPath, rangeString + '.txt');
+        let rangeLogFilename = path.join(exportPath, rangeString + '.csv');
+
+        fs.stat(rangeLogFilename, function(err, stat) {
+            if(err == null) {
+                fs.unlink(rangeLogFilename, (error) => {
+                    if (error) throw error;
+                })
+            }
+        });
 
         for (let index = 0; index < files.length; index++) {
             let filename = files[index];
@@ -157,12 +165,9 @@ module.exports = {
     },
     sendFileByMail: function (fileUrl, msg) {
         let fileName = fileUrl.split('/')[fileUrl.split('/').length - 1];
-        console.silentLog('sending file ' + fileName);
         let subject = "📊📋 " + msg + " 🕰️📬 " + fileName;
         let content = "Automatic traffic report. Do not reply.";
-        mailer.sendMail(subject, content, fileName, fileUrl, function() {
-            console.silentLog('sending weekly ' + fileName + ' to email');
-        });
+        mailer.sendMail(subject, content, fileName, fileUrl);
     },
     getWeekNumber: function(d) {
         // Copy date so don't modify original
@@ -177,9 +182,16 @@ module.exports = {
         // Return array of year and week number
         return [d.getUTCFullYear(), weekNo];
     },
-    getFilesFromPath: function (dirPath, callback) {
+    getFilesFromPath: function (dirPath, extension, callback) {
         fs.readdir(dirPath, function (err, files) {
-            callback(files);
+            let selectedFiles = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.split('.')[1] === extension) {
+                    selectedFiles.push(file);
+                }
+            }
+            callback(selectedFiles);
         });
     },
     getUnstoredDailyLogsFromPath: function (dirPath, callback) {
@@ -187,7 +199,7 @@ module.exports = {
         fs.readdir(dirPath, function (err, files) {
             for (let index = 0; index < files.length; index++) {
                 let file = files[index];
-                if (file.split('.')[1] === 'txt' && file.split('T').length === 1) {
+                if (file.split('.')[1] === 'csv' && file.split('T').length === 1) {
                     let date = file.split('T')[0];
                     if (dateCollection.includes(date) === false) {
                         dateCollection.push(date);
@@ -210,7 +222,7 @@ module.exports = {
             let collection = {};
 
             for (let i = 0; i < files.length; i++) {
-                let filename = files[i].split('.txt')[0];
+                let filename = files[i].split('.csv')[0];
                 let fileDate = new Date(filename);
                 let fileWeek = getWeekNumber(fileDate);
                 // exclude current week files
@@ -238,6 +250,7 @@ module.exports = {
         let archiveDir = path.join(__dirname, folder);
         let generateLog = this.generateLog;
         let sendFileByMail = this.sendFileByMail;
+        let today = this.timeToFileName(new Date());
         this.getUnstoredDailyLogsFromPath(archiveDir, function(files) {
             // exclude today file if it exist.
             let collectableFiles = [];
@@ -264,11 +277,10 @@ module.exports = {
     },
     sendLastWeekLog: function() {
         let archiveDir = path.join(__dirname, "../logs/weeks");
-        let generateLog = this.generateLog;
         let sendFileByMail = this.sendFileByMail;
 
-        //get last file
-        this.getFilesFromPath(archiveDir, function(files) {
+        //get last file in weeks archive
+        this.getFilesFromPath(archiveDir, 'csv', function(files) {
             let archiveDir = path.join(__dirname, "../logs/weeks");
             let fileUrl = path.join(archiveDir, files.sort().reverse()[0]);
             let jsonUrl = generateJson(fileUrl, function(jsonUrl){

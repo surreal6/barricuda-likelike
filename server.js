@@ -99,7 +99,7 @@ var gameState = {
 //save the server startup time and send it in case the clients need to syncronize something
 var START_TIME = Date.now();
 
-mailer.sendDebugMail('debug mail', 'FAD server restarted');
+mailer.sendDebugMail('debug mail', 'Likelike server restarted');
 
 //a collection of banned IPs
 //not permanent, it lasts until the server restarts
@@ -112,8 +112,6 @@ app.use(express.static("public"));
 if (process.env.TRAFFICLOG != null) {
     allowTrafficLog = process.env.TRAFFICLOG.toLowerCase() === 'true';
 
-    // tLog.cleanUpLogs();
-
     if (process.env.SENDLOG != null && process.env.TRAFFICLOG.toLowerCase() === 'true') {
         let timezone = "GMT";
         if (process.env.TIMEZONE != null) {
@@ -121,28 +119,28 @@ if (process.env.TRAFFICLOG != null) {
         }
 
         // every day at 00:00
-        cron.schedule('0 0 0 * * *', () => {
+        cron.schedule('0 0 * * *', () => {
             logFileName = tLog.changeLogFileName(Date.now());
-            mailer.sendDebugMail('debug mail', 'change log filename to ' + logFileName);
+            // mailer.sendDebugMail('debug mail', 'change log filename to ' + logFileName);
         }, { timezone: timezone });
 
-        // for testing
-        // every day at 06:00  send the week report
-         cron.schedule('* 6 * * 1', () => {
-            tLog.sendLastWeekLog();
-        }, { timezone: timezone });
-            
-        // every monday at 06:00  send a week report
+        // every monday at 06:00 send a week report
         cron.schedule('0 6 * * 1', () => {
-            mailer.sendDebugMail('debug mail', 'cron weekly check');
+            // mailer.sendDebugMail('debug mail', 'cron weekly check');
             tLog.collectWeekLogs('../logs');
         }, { timezone: timezone });
 
-        // first day of every month at 7:00 send a global report
-        cron.schedule('0 7 1 * *', () => {
-            mailer.sendDebugMail('debug mail', 'cron monthly check');
+        // every monday at 06:30 send a global report
+        cron.schedule('30 6 * * 1', () => {
+            // mailer.sendDebugMail('debug mail', 'cron monthly check');
             tLog.collectGlobalLogs('../logs/weeks');
         }, { timezone: timezone });
+
+        // // first day of every month at 7:00 send a global report
+        // cron.schedule('0 7 1 * *', () => {
+        //     mailer.sendDebugMail('debug mail', 'cron monthly check');
+        //     tLog.collectGlobalLogs('../logs/weeks');
+        // }, { timezone: timezone });
     }
     
     logFileName = tLog.serverStart(START_TIME);
@@ -665,7 +663,16 @@ io.on("connection", function (socket) {
             tLog.appendToLog(logFileName, socket.id, "poolAnswers", data);
             // console.silentLog(socket.id, "poolAnswers", data);
         } catch (e) {
-            console.silentLog("Error on closeIframe " + socket.id + " listener?");
+            console.silentLog("Error on poolAnswers " + socket.id + " listener?");
+            console.error(e);
+        }
+    })
+
+    socket.on("appendToLog", function (data) {
+        try {
+            tLog.appendToLog(logFileName, socket.id, data[0], [data[1]]);
+        } catch (e) {
+            console.silentLog("Error on appendToLog " + socket.id + " listener?");
             console.error(e);
         }
     })
@@ -865,14 +872,17 @@ function adminCommand(adminSocket, str) {
                 tLog.cleanUpLogs();
                 break;
             case "collectWeek":
+            case "cw":
                 cmd.shift();
                 tLog.collectWeekLogs('../logs');
                 break;
             case "sendLastWeekLog":
+            case "lw":
                 cmd.shift();
                 tLog.sendLastWeekLog();
                 break;
             case "collectGlobal":
+            case "cg":
                 cmd.shift();
                 tLog.collectGlobalLogs('../logs/weeks');
                 break;

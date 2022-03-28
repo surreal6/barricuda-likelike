@@ -79,25 +79,11 @@ module.exports = {
         }
 
         sendMail().then(function() {
-            console.silentLog("----- Message sent to: %s", to, bcc);
+            console.silentLog("----- Message sent to: " + to + ', ' + bcc);
             if (callback) {
                 callback();
             }
         }).catch(console.error);
     },
-    sendMail: function(subject, content, fileName, fileUrl, callback) {
-        this.sendLogMail(
-            process.env.MAILHOST, 
-            process.env.MAILUSER, 
-            process.env.MAILPASS, 
-            process.env.MAILTO, 
-            process.env.MAILBCC,
-            subject,
-            content,
-            fileName,
-            fileUrl,
-            callback
-        );
-    }
 };
 
