@@ -261,11 +261,11 @@ module.exports = {
                 }
             }
             if (collectableFiles.length > 1) {
-                mailer.sendDebugMail('debug mail', 'collect Week: ready for generateLog');
+                // mailer.sendDebugMail('debug mail', 'collect Week: ready for generateLog');
                 let filename = generateLog(collectableFiles, archiveDir,  path.join(__dirname, '../logs/weeks'), path.join(__dirname, '../logs/archive'), function(filename) {
-                    mailer.sendDebugMail('debug mail', 'collect Week: ready for generateJson');
+                    // mailer.sendDebugMail('debug mail', 'collect Week: ready for generateJson');
                     let jsonUrl = generateJson(filename, function(jsonUrl){
-                        mailer.sendDebugMail('debug mail', 'collect Week: json generated');
+                        // mailer.sendDebugMail('debug mail', 'collect Week: json generated');
                         sendFileByMail(jsonUrl, "Week Log");
                     });
                 });
