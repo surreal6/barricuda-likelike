@@ -107,7 +107,8 @@ If log feature is activated, the answers will be recorded in the log.
 Add this to .env file:
 
 ```
-TRAFFICLOG = true
+TRAFFICLOG=true
+WEEKLOG=false
 ```
 
 A log file will be created in /logs.  It will register the following actions in a csv file.
@@ -148,21 +149,24 @@ A log file will be created in /logs.  It will register the following actions in 
     timeStamp (ISO format), userID, 'disconnect'
     ```
 
+If you set WEEKLOG to true, a report will be collected each week.
+
+> Warning: There is no fallback for the cron tasks, so, if your server has a lot of resets you better set WEEKLOG to false.
 
 ####  2.4.2. <a name='Trafficresumebyemail'></a>Traffic resume by email
 
-You should activate TRaffic log feature for this to work!!!
+You should activate Traffic log feature for this to work!!!
 
 Add this to .env file to activate this feature:
 
     ```
-    SENDLOG = true
-    MAILHOST = SMTP ongoing server
-    MAILUSER = mail login
-    MAILPASS = password
-    MAILTO = to@domain.com
-    MAILBCC = bcc@domain.com
-    TIMEZONE = "Europe/Madrid"
+    SENDLOG=true
+    MAILHOST=SMTP ongoing server
+    MAILUSER=mail login
+    MAILPASS=password
+    MAILTO=to@domain.com
+    MAILBCC=bcc@domain.com
+    TIMEZONE="Europe/Madrid"
     ```
 
 TIMEZONE is optional, "GMT" is the default. Look [here](https://raw.githubusercontent.com/node-cron/tz-offset/master/generated/offsets.json) for available timezones. This is important to sync cron tasks with your server locale time.
@@ -294,9 +298,13 @@ DEBUG_CONSOLE will mute the console output (it's better for performance)
 
 You can also mute server console by adding a .env variable
 
-    VERBOSE = false
+    VERBOSE=false
 
-You can use DEBUGMAILTO variable in .env to define a mail for debug or admin alerts. Put this line in the code to send an admin alert by mail.
+You can use DEBUGMAILTO variable in .env to define a mail for debug or admin alerts. 
+
+    DEBUGMAILTO=mail@server.com
+
+Put this line in the code to send an admin alert by mail.
 
     mailer.sendDebugMail('your debug mail subject here', 'Your mail content here');
 

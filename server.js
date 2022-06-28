@@ -13,17 +13,18 @@ console.silentLog = function(msg) {
 //.env content
 /*
 ADMINS=username1|pass1,username2|pass2
-PORT = 3000
-TRAFFICLOG = true
-SENDLOG = true
-MAILHOST = SMTP ongoing server
-MAILUSER = mail@domain.com
-MAILPASS = *****
-MAILTO = to@domain.com,to2@domain2.com
-MAILBCC = bcc@domain.com,bcc2@domain2.com
-DEBUGMAILTO = debugTo@domain.com
-TIMEZONE = "Europe/Madrid"
-VERBOSE = false
+PORT=3000
+TRAFFICLOG=true
+SENDLOG=true
+WEEKLOG=false
+MAILHOST=SMTP ongoing server
+MAILUSER=mail@domain.com
+MAILPASS=*****
+MAILTO=to@domain.com,to2@domain2.com
+MAILBCC=bcc@domain.com,bcc2@domain2.com
+DEBUGMAILTO=debugTo@domain.com
+TIMEZONE="Europe/Madrid"
+VERBOSE=false
 */
 
 let allowTrafficLog = false;
@@ -118,28 +119,38 @@ if (process.env.TRAFFICLOG != null) {
             timezone = process.env.TIMEZONE;
         }
 
-        // every day at 00:00
-        cron.schedule('0 0 * * *', () => {
-            logFileName = tLog.changeLogFileName(Date.now());
-        }, { timezone: timezone });
+        if (process.env.WEEKLOG === 'true') {
 
-        // every monday at 06:00 send a week report
-        cron.schedule('0 6 * * 1', () => {
-            tLog.collectWeekLogs('../logs');
-        }, { timezone: timezone });
+            // every day at 00:00
+            cron.schedule('0 0 * * *', () => {
+                logFileName = tLog.changeLogFileName(Date.now());
+            }, { timezone: timezone });
 
-        // every monday at 06:30 send a global report
-        cron.schedule('30 6 * * 1', () => {
-            tLog.collectGlobalLogs('../logs/weeks');
-        }, { timezone: timezone });
+            // every monday at 06:00 send a week report
+            cron.schedule('0 6 * * 1', () => {
+                tLog.collectWeekLogs('../logs');
+            }, { timezone: timezone });
 
-        // // first day of every month at 7:00 send a global report
-        // cron.schedule('0 7 1 * *', () => {
-        //     tLog.collectGlobalLogs('../logs/weeks');
-        // }, { timezone: timezone });
+            // every monday at 06:30 send a global report
+            cron.schedule('30 6 * * 1', () => {
+                tLog.collectGlobalLogs('../logs/weeks');
+            }, { timezone: timezone });
+        
+        } else {
+
+            // every day at 00:00
+            cron.schedule('0 0 * * *', () => {
+                logFileName = tLog.changeLogFileName(Date.now());
+                tLog.collectDailyGlobalLogs('../logs');
+            }, { timezone: timezone });
+
+        }
     }
     
+    tLog.collectDailyGlobalLogs('../logs');
+
     logFileName = tLog.serverStart(START_TIME);
+
 }
 
 //when a client connects the socket is established and I set up all the functions listening for events
@@ -881,6 +892,13 @@ function adminCommand(adminSocket, str) {
             case "cg":
                 cmd.shift();
                 tLog.collectGlobalLogs('../logs/weeks');
+                break;
+            case "c":
+                cmd.shift();
+                logFileName = tLog.changeLogFileName(Date.now());
+                tLog.collectDailyGlobalLogs('../logs', function() {
+                    tLog.appendToLog(logFileName, 'backup global data');
+                });
                 break;
         }
     }

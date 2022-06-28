@@ -110,8 +110,10 @@ module.exports = {
         startTime = this.timeToFileName(new Date(startTime));
         this.createDirectory('logs');
         this.createDirectory('logs/archive');
-        this.createDirectory('logs/weeks');
         this.createDirectory('logs/global');
+        if (process.env.WEEKLOG === 'true') {
+            this.createDirectory('logs/weeks');
+        }
         this.createDirectory('public/logs');
         let logFileName = './logs/' + startTime + '.csv';
         this.appendToLog(logFileName, startTime + ',serverStart');
@@ -161,6 +163,27 @@ module.exports = {
             callback(rangeLogFilename);
         }
         return rangeLogFilename;
+    },
+    generateDailyLog: function (files, logDir, exportPath, archivePath, callback) {
+        let outputFilename = path.join(exportPath, 'global.csv');
+
+        for (let index = 0; index < files.length; index++) {
+            let filename = files[index];
+            let filePath = path.join(logDir, filename);
+
+            try {
+                const buf = fs.readFileSync(filePath)
+                fs.appendFileSync(outputFilename, buf.toString())
+                fs.renameSync(filePath, path.join(archivePath, filename))
+            } catch (e) {
+                throw new Error('something failed appending logs')
+            }
+        }
+
+        if (callback) {
+            callback(outputFilename);
+        }
+        return outputFilename;
     },
     sendFileByMail: function (fileUrl, msg) {
         let fileName = fileUrl.split('/')[fileUrl.split('/').length - 1];
@@ -283,6 +306,34 @@ module.exports = {
             });
         });
     },
+    collectDailyGlobalLogs: function(folder, callback) {
+        let sourceDir = path.join(__dirname, folder);
+        let archiveDir = path.join(__dirname, '../logs/archive');
+        let globalDir = path.join(__dirname, '../logs/global');
+
+        let generateDailyLog = this.generateDailyLog;
+        let sendFileByMail = this.sendFileByMail;
+        this.getFilesFromPath(sourceDir, 'csv', function(files) {
+            //             generateLog(files, logDir,   exportPath, archivePath, callback)
+            let filename = generateDailyLog(files, sourceDir,  globalDir, archiveDir, function(filename) {
+                let jsonUrl = generateJson(filename, function(jsonUrl){
+                    // copy latest global JSON report to public folder
+                    fs.copyFile(jsonUrl, path.join(__dirname, '../public/logs/global.json'), function() {
+                        // send report by email
+                        if (process.env.SENDLOG.toLowerCase() === 'true') {
+                            sendFileByMail(jsonUrl, "global Log");
+                        };
+                    });
+                     // copy latest global CSV report to public folder
+                    fs.copyFile(filename, path.join(__dirname, '../public/logs/global.csv'), function() {});
+                });
+               
+            });
+
+            if (callback) callback(filename);
+            return files;
+        });
+    },
     collectGlobalLogs: function(folder) {
         let archiveDir = path.join(__dirname, folder);
 
@@ -298,7 +349,7 @@ module.exports = {
                     // copy latest global JSON report to public folder
                     fs.copyFile(jsonUrl, path.join(__dirname, '../public/logs/global.json'), function() {
                         // send report by email
-                        sendFileByMail(jsonUrl, "global Log"); 
+                        sendFileByMail(jsonUrl, "global Log");
                     });
                 });
                 // copy latest global CSV report to public folder
