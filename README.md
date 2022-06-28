@@ -296,6 +296,10 @@ You can also mute server console by adding a .env variable
 
     VERBOSE = false
 
+You can use DEBUGMAILTO variable in .env to define a mail for debug or admin alerts. Put this line in the code to send an admin alert by mail.
+
+    mailer.sendDebugMail('your debug mail subject here', 'Your mail content here');
+
 ##  3. <a name='credits'></a>credits
 
 Code licensed under a GNU Lesser General Public License v2.1.

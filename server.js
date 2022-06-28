@@ -99,7 +99,7 @@ var gameState = {
 //save the server startup time and send it in case the clients need to syncronize something
 var START_TIME = Date.now();
 
-mailer.sendDebugMail('debug mail', 'Likelike server restarted');
+// mailer.sendDebugMail('debug mail', 'Likelike server restarted');
 
 //a collection of banned IPs
 //not permanent, it lasts until the server restarts
@@ -121,24 +121,20 @@ if (process.env.TRAFFICLOG != null) {
         // every day at 00:00
         cron.schedule('0 0 * * *', () => {
             logFileName = tLog.changeLogFileName(Date.now());
-            // mailer.sendDebugMail('debug mail', 'change log filename to ' + logFileName);
         }, { timezone: timezone });
 
         // every monday at 06:00 send a week report
         cron.schedule('0 6 * * 1', () => {
-            // mailer.sendDebugMail('debug mail', 'cron weekly check');
             tLog.collectWeekLogs('../logs');
         }, { timezone: timezone });
 
         // every monday at 06:30 send a global report
         cron.schedule('30 6 * * 1', () => {
-            // mailer.sendDebugMail('debug mail', 'cron monthly check');
             tLog.collectGlobalLogs('../logs/weeks');
         }, { timezone: timezone });
 
         // // first day of every month at 7:00 send a global report
         // cron.schedule('0 7 1 * *', () => {
-        //     mailer.sendDebugMail('debug mail', 'cron monthly check');
         //     tLog.collectGlobalLogs('../logs/weeks');
         // }, { timezone: timezone });
     }
