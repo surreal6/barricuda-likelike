@@ -45,11 +45,11 @@ The tiniest MMORPG. Choose an avatar and hang out with your friends in a virtual
 
 <a href="http://likelike-barricuda.glitch.me" target="_blank">>>>Try it here<<<</a>
 
-Aventuras visuales is an avant garde cinema school and collective in Madrid (Spain). This is a virtual tribute to 'La Barricuda', their beloved local where the workshops took place, which closed years ago, in 2009.
-
 This project is an extension of original [likelike](https://github.com/molleindustria/likelike-online) by [molleindustria](molleindustria.org) and is commisioned by [arsGames](https://arsgames.net/)
 
 Look [here](https://github.com/molleindustria/likelike-online#readme) for basic usage instructions.
+
+Aventuras visuales is an avant garde cinema school and collective in Madrid (Spain). This is a virtual tribute to 'La Barricuda', their beloved local where the workshops took place, which closed years ago, in 2009.
 
 
 ##  2. <a name='Newfeatures'></a>New features
@@ -107,7 +107,7 @@ If log feature is activated, the answers will be recorded in the log.
 Add this to .env file:
 
 ```
-TRAFFICLOG = true
+TRAFFICLOG=true
 ```
 
 A log file will be created in /logs.  It will register the following actions in a csv file.
@@ -148,36 +148,36 @@ A log file will be created in /logs.  It will register the following actions in 
     timeStamp (ISO format), userID, 'disconnect'
     ```
 
-
 ####  2.4.2. <a name='Trafficresumebyemail'></a>Traffic resume by email
 
-You should activate TRaffic log feature for this to work!!!
+You should activate Traffic log feature for this to work!!!
 
 Add this to .env file to activate this feature:
 
     ```
-    SENDLOG = true
-    MAILHOST = SMTP ongoing server
-    MAILUSER = mail login
-    MAILPASS = password
-    MAILTO = to@domain.com
-    MAILBCC = bcc@domain.com
-    TIMEZONE = "Europe/Madrid"
+    SENDLOG=true
+    MAILHOST=SMTP ongoing server
+    MAILUSER=mail login
+    MAILPASS=password
+    MAILTO=to@domain.com
+    MAILBCC=bcc@domain.com
+    TIMEZONE="Europe/Madrid"
     ```
 
 TIMEZONE is optional, "GMT" is the default. Look [here](https://raw.githubusercontent.com/node-cron/tz-offset/master/generated/offsets.json) for available timezones. This is important to sync cron tasks with your server locale time.
 
-Three cron tasks will be created:
+A cron task will rename log file at 00:00AM  to match current date.
 
-* A daily task at 00:00AM to rename log file to match current date
+Also, on every reset and during the daily task, a collect data function will run.
 
-* An every monday task at 04:00AM to compile previous week into a single file and send it by email.
+The data collect function will merge all the logs in one global log. You can find an updated copy of the data in:
 
-      You can run this event at any time by using the '/collectWeek' admin command.
+    localhost:3000/logs/global.csv
+    localhost:3000/logs/global.json
 
-* A monthly task to compile all existing weekly logs into a single file, send it by email and copy it to public directory
- 
-      You can run this event at any time by using the '/collectGlobal' admin command
+The global.json will be sent by email if SENDLOG is set to true
+
+You can run this collect event at any time by using the '/collect' or '/c' admin command.
 
 ###  2.5. <a name='Graphicfeatures'></a>Graphic features
 
@@ -294,9 +294,13 @@ DEBUG_CONSOLE will mute the console output (it's better for performance)
 
 You can also mute server console by adding a .env variable
 
-    VERBOSE = false
+    VERBOSE=false
 
-You can use DEBUGMAILTO variable in .env to define a mail for debug or admin alerts. Put this line in the code to send an admin alert by mail.
+You can use DEBUGMAILTO variable in .env to define a mail for debug or admin alerts. 
+
+    DEBUGMAILTO=mail@server.com
+
+Put this line in the code to send an admin alert by mail.
 
     mailer.sendDebugMail('your debug mail subject here', 'Your mail content here');
 
