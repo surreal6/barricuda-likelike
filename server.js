@@ -16,7 +16,6 @@ ADMINS=username1|pass1,username2|pass2
 PORT=3000
 TRAFFICLOG=true
 SENDLOG=true
-WEEKLOG=false
 MAILHOST=SMTP ongoing server
 MAILUSER=mail@domain.com
 MAILPASS=*****
@@ -118,33 +117,12 @@ if (process.env.TRAFFICLOG != null) {
         if (process.env.TIMEZONE != null) {
             timezone = process.env.TIMEZONE;
         }
-
-        if (process.env.WEEKLOG === 'true') {
-
-            // every day at 00:00
-            cron.schedule('0 0 * * *', () => {
-                logFileName = tLog.changeLogFileName(Date.now());
-            }, { timezone: timezone });
-
-            // every monday at 06:00 send a week report
-            cron.schedule('0 6 * * 1', () => {
-                tLog.collectWeekLogs('../logs');
-            }, { timezone: timezone });
-
-            // every monday at 06:30 send a global report
-            cron.schedule('30 6 * * 1', () => {
-                tLog.collectGlobalLogs('../logs/weeks');
-            }, { timezone: timezone });
         
-        } else {
-
-            // every day at 00:00
-            cron.schedule('0 0 * * *', () => {
-                logFileName = tLog.changeLogFileName(Date.now());
-                tLog.collectDailyGlobalLogs('../logs');
-            }, { timezone: timezone });
-
-        }
+        // every day at 00:00
+        cron.schedule('0 0 * * *', () => {
+            logFileName = tLog.changeLogFileName(Date.now());
+            tLog.collectDailyGlobalLogs('../logs');
+        }, { timezone: timezone });
     }
     
     tLog.collectDailyGlobalLogs('../logs');
@@ -874,26 +852,8 @@ function adminCommand(adminSocket, str) {
                 break;
             
             //trafic management
-            case "cleanLogs":
-                cmd.shift();
-                tLog.cleanUpLogs();
-                break;
-            case "collectWeek":
-            case "cw":
-                cmd.shift();
-                tLog.collectWeekLogs('../logs');
-                break;
-            case "sendLastWeekLog":
-            case "lw":
-                cmd.shift();
-                tLog.sendLastWeekLog();
-                break;
-            case "collectGlobal":
-            case "cg":
-                cmd.shift();
-                tLog.collectGlobalLogs('../logs/weeks');
-                break;
             case "c":
+            case "collect":
                 cmd.shift();
                 logFileName = tLog.changeLogFileName(Date.now());
                 tLog.collectDailyGlobalLogs('../logs', function() {
